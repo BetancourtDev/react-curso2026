@@ -7,6 +7,7 @@ const App = () => {
     <>
       <Layout>
         <h1>La Futreria del Abuelo</h1>
+        <Bienvenida/>
         <ItemListContainer />
       </Layout>
     </>
