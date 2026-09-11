@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Asistentes from "./Asistentes";
 import Titulos from "./Titulos";
 import estilo from "./Titulos.module.css"
@@ -9,6 +10,13 @@ const Bienvenida = () => {
     { nombre: "Ana Gómez", tarea: "Diseñadora UX/UI", emoji: "" },
     { nombre: "Carlos Ruiz", tarea: "Backend Developer", emoji: "" },
   ];
+
+  useEffect(() => {
+    console.log("El componente se ha montando")
+    return () => {
+      console.log("El componente se ha desmontado")
+    }
+  },[])
 
   return (
     <div>

@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "nombre": "Camara Instantánea",
+    "precio": 85000,
+    "stock": 22,
+    "imagen": "/images/CamaraInstantanea.png"
+  },
+  {
+    "id": 2,
+    "nombre": "Mate de Messi",
+    "precio": 35000,
+    "stock": 10,
+    "imagen": "/images/matesito.png"
+  }
+]
