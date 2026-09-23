@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import Asistentes from "./Asistentes";
 import Titulos from "./Titulos";
-import estilo from "./Titulos.module.css"
 
 const Bienvenida = () => {
   
