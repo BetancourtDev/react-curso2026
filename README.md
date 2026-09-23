@@ -1,16 +1,30 @@
-# React + Vite
+# Requerimientos del proyecto
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Requerimiento #1: Estructura y Layout
 
-Currently, two official plugins are available:
+Estructura Organizada: Arquitectura modular dividida en 
+- components/layouts
+- components/products
+- components/cart
+- components/team
+- context
+- pages
+- services
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Layout.jsx: Integra 
+- Header.jsx: con identidad de marca, 
+- Nav.jsx 
+- Footer.jsx
 
-## React Compiler
+## Requerimiento #2: Catálogo de productos con datos de una API
+La aplicación debe tener un componente como ItemListContainer.jsx (o un componente que cumpla esa función) que cargue la información de productos desde un archivo productos.json local usando useEffect y fetch.
+Los productos deben renderizarse utilizando un componente reutilizable Item.jsx, que reciba los datos por props.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Requerimiento #3: Sistema de ruteo
+La navegación debe ser gestionada por react-router-dom.
+Deben existir, como mínimo, las siguientes rutas:
+/: Vista principal o de bienvenida.
+/productos:
+/producto/:id: Vista de detalle de un único producto
+/carrito: Vista del carrito de compras.
+El NavBar debe utilizar el componente <Link> para una navegación fluida sin recargas de página.
