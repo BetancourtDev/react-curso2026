@@ -14,7 +14,7 @@
     "rol": "Frontend Lead & Arquitecto Web",
     "bio": "Especialista en React y experiencias interactivas de alto rendimiento.",
     "imagen": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-    "email": "juan@lafruteriadelabuelo.com",
+    "email": "juan@betancourttech.com",
     "especialidad": "Desarrollo"
   },
   {
@@ -23,7 +23,7 @@
     "rol": "Lead UX/UI Designer",
     "bio": "Transformando conceptos complejos en interfaces intuitivas y elegantes.",
     "imagen": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
-    "email": "ana@lafruteriadelabuelo.com",
+    "email": "ana@betancourttech.com",
     "especialidad": "Diseño UX"
   },
   {
@@ -32,7 +32,7 @@
     "rol": "Backend & Cloud Specialist",
     "bio": "Garantizando escalabilidad, seguridad e integración fluida de APIs.",
     "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-    "email": "carlos@lafruteriadelabuelo.com",
+    "email": "carlos@betancourttech.com",
     "especialidad": "Infraestructura"
   }
 ]
