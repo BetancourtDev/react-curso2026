@@ -6,6 +6,7 @@ import {
   getDoc,
   getDocs,
   updateDoc,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 
@@ -160,4 +161,66 @@ export const fetchProductById = async (id) => {
   }
 
   return normalizeProduct(snapshot.data(), snapshot.id);
+};
+
+/**
+ * Pobla la colección "productos" en Firestore a partir de /datos/productos.json,
+ * evitando duplicar productos que ya existan con el mismo título.
+ * @returns {Promise<{ added: number, skipped: number }>}
+ */
+export const seedProductsFromJson = async () => {
+  const response = await fetch("/datos/productos.json");
+  if (!response.ok) {
+    throw new Error("No se pudo leer el archivo /datos/productos.json.");
+  }
+
+  const rawItems = await response.json();
+  if (!Array.isArray(rawItems) || rawItems.length === 0) {
+    throw new Error("El archivo productos.json está vacío o tiene un formato inválido.");
+  }
+
+  const existingProducts = await fetchProducts();
+  const existingTitles = new Set(
+    existingProducts.map((p) => p.title.trim().toLowerCase())
+  );
+
+  const batch = writeBatch(db);
+  const collectionRef = collection(db, "productos");
+  let added = 0;
+  let skipped = 0;
+
+  rawItems.forEach((item) => {
+    const title = (item.title || item.nombre || "").trim();
+    if (!title) return;
+
+    if (existingTitles.has(title.toLowerCase())) {
+      skipped += 1;
+      return;
+    }
+
+    const newDocRef = doc(collectionRef);
+    const ratingVal =
+      typeof item.rating === "object"
+        ? Number(item.rating?.rate || 4.8)
+        : Number(item.rating || 4.8);
+
+    batch.set(newDocRef, {
+      title,
+      price: Number(item.price ?? item.precio ?? 0),
+      description: (item.description || item.descripcion || "").trim(),
+      category: (item.categoria || item.category || "General").trim(),
+      image: (item.image || item.imagen || "").trim(),
+      stock: item.stock !== undefined ? Number(item.stock) : 15,
+      rating: ratingVal,
+    });
+
+    existingTitles.add(title.toLowerCase());
+    added += 1;
+  });
+
+  if (added > 0) {
+    await batch.commit();
+  }
+
+  return { added, skipped };
 };

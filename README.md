@@ -53,6 +53,13 @@ Implementar una confirmación antes de eliminar un producto para mejorar la expe
 ## Requerimiento #7: Optimización del diseño y responsividad
 
 Objetivo: mejorar la apariencia y la accesibilidad del sitio utilizando herramientas modernas de diseño y estilización.
-En este proyecto trabajaremos en la optimización del código y en la funcionalidad de React. Sin embargo, algunas funcionalidades también requieren prestar atención a los estilos y a la experiencia de usuario.
-Para esta entrega, podrán elegir las herramientas de estilización que prefieran.
-Se presentará Tailwind CSS, un framework de CSS ampliamente utilizado en el desarrollo web actual y solicitado en distintos ámbitos profesionales. El objetivo es que conozcan esta herramienta y puedan aplicarla en este proyecto o en futuros desarrollos.
+
+## Requerimiento #8:  Funcionalidades de búsqueda y paginación
+
+ 8.1. Barra de búsqueda (esta ya la tenemos)
+Implementar una barra de búsqueda que filtre los productos en tiempo real a medida que el usuario escribe.
+
+8.2. Paginador de productos
+
+Si el catálogo de productos es extenso, implementar un paginador para dividir los resultados en varias páginas y optimizar la navegación y los tiempos de carga.
+
