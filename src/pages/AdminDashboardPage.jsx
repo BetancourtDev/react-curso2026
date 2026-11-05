@@ -16,6 +16,7 @@ import {
   DollarSign,
   X,
   Save,
+  Database,
 } from "lucide-react";
 import {
   fetchProducts,
@@ -23,9 +24,11 @@ import {
   updateProduct,
   deleteProduct,
   validateProductData,
+  seedProductsFromJson,
 } from "../services/productService";
 import { useCart } from "../context/useCart";
 import ConfirmDeleteModal from "../components/products/ConfirmDeleteModal";
+import Pagination from "../components/products/Pagination";
 import styles from "./AdminDashboardPage.module.css";
 
 const emptyForm = {
@@ -43,13 +46,16 @@ const AdminDashboardPage = () => {
   const [error, setError] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
 
-  // Filtros de tabla
+  // Filtros y paginación de tabla
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [stockFilter, setStockFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
 
-  // Notificación global de éxito
+  // Notificación global de éxito o error de poblado
   const [bannerMessage, setBannerMessage] = useState("");
+  const [seeding, setSeeding] = useState(false);
 
   // Modal de formulario (Crear / Editar)
   const [formModalOpen, setFormModalOpen] = useState(false);
@@ -100,6 +106,33 @@ const AdminDashboardPage = () => {
     setLoading(true);
     setError("");
     setReloadKey((prev) => prev + 1);
+  };
+
+  const handleSeedDatabase = async () => {
+    setSeeding(true);
+    setError("");
+    try {
+      const { added, skipped } = await seedProductsFromJson();
+      if (added > 0) {
+        showTemporaryBanner(
+          `¡Base de datos poblada! Se cargaron ${added} productos nuevos en Firestore${
+            skipped > 0 ? ` (${skipped} ya existían)` : ""
+          }.`
+        );
+        handleRefresh();
+      } else {
+        showTemporaryBanner(
+          `Todos los productos del catálogo inicial (${skipped}) ya se encuentran en Firestore.`
+        );
+      }
+    } catch (err) {
+      console.error("Error al poblar la base de datos:", err);
+      setError(
+        err.message || "No se pudo poblar la base de datos en Firestore."
+      );
+    } finally {
+      setSeeding(false);
+    }
   };
 
   const showTemporaryBanner = (msg) => {
@@ -257,6 +290,18 @@ const AdminDashboardPage = () => {
     return matchesSearch && matchesCategory && matchesStock;
   });
 
+  // Paginación de la tabla de administración
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / itemsPerPage)
+  );
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (safeCurrentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
   const getStockStatusClass = (stock) => {
     const qty = Number(stock) || 0;
     if (qty <= 0) return styles.stockOut;
@@ -291,8 +336,28 @@ const AdminDashboardPage = () => {
         <div className={styles.headerActions}>
           <button
             type="button"
+            onClick={handleSeedDatabase}
+            disabled={seeding || loading}
+            className={styles.secondaryBtn}
+            title="Cargar productos iniciales desde productos.json a Firestore"
+          >
+            {seeding ? (
+              <>
+                <RefreshCw size={17} className={styles.spinner} />
+                <span>Poblando BD...</span>
+              </>
+            ) : (
+              <>
+                <Database size={17} />
+                <span>Poblar BD</span>
+              </>
+            )}
+          </button>
+
+          <button
+            type="button"
             onClick={handleRefresh}
-            disabled={loading}
+            disabled={loading || seeding}
             className={styles.secondaryBtn}
             title="Sincronizar con Firestore"
           >
@@ -374,14 +439,20 @@ const AdminDashboardPage = () => {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
               placeholder="Buscar por nombre, categoría o ID..."
               className={styles.searchInput}
             />
             {searchQuery && (
               <button
                 type="button"
-                onClick={() => setSearchQuery("")}
+                onClick={() => {
+                  setSearchQuery("");
+                  setCurrentPage(1);
+                }}
                 className={styles.clearBtn}
                 aria-label="Limpiar búsqueda"
               >
@@ -393,7 +464,10 @@ const AdminDashboardPage = () => {
           <div className={styles.filtersGroup}>
             <select
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
+              onChange={(e) => {
+                setCategoryFilter(e.target.value);
+                setCurrentPage(1);
+              }}
               className={styles.selectFilter}
               aria-label="Filtrar por categoría"
             >
@@ -406,7 +480,10 @@ const AdminDashboardPage = () => {
 
             <select
               value={stockFilter}
-              onChange={(e) => setStockFilter(e.target.value)}
+              onChange={(e) => {
+                setStockFilter(e.target.value);
+                setCurrentPage(1);
+              }}
               className={styles.selectFilter}
               aria-label="Filtrar por estado de stock"
             >
@@ -426,7 +503,10 @@ const AdminDashboardPage = () => {
               <button
                 key={cat}
                 type="button"
-                onClick={() => setCategoryFilter(cat)}
+                onClick={() => {
+                  setCategoryFilter(cat);
+                  setCurrentPage(1);
+                }}
                 className={`${styles.categoryChip} ${
                   categoryFilter === cat ? styles.categoryChipActive : ""
                 }`}
@@ -463,13 +543,23 @@ const AdminDashboardPage = () => {
             <p>
               No hay resultados para los filtros aplicados o el catálogo está vacío.
             </p>
-            <button
-              type="button"
-              onClick={openCreateModal}
-              className={styles.primaryBtn}
-            >
-              <Plus size={17} /> Agregar primer producto
-            </button>
+            <div className={styles.headerActions}>
+              <button
+                type="button"
+                onClick={handleSeedDatabase}
+                disabled={seeding}
+                className={styles.secondaryBtn}
+              >
+                <Database size={17} /> Poblar desde productos.json
+              </button>
+              <button
+                type="button"
+                onClick={openCreateModal}
+                className={styles.primaryBtn}
+              >
+                <Plus size={17} /> Agregar primer producto
+              </button>
+            </div>
           </div>
         ) : (
           <div className={styles.tableResponsive}>
@@ -484,7 +574,7 @@ const AdminDashboardPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredProducts.map((item) => (
+                {paginatedProducts.map((item) => (
                   <tr key={item.id}>
                     <td>
                       <div className={styles.productCell}>
@@ -563,10 +653,19 @@ const AdminDashboardPage = () => {
 
         {!loading && !error && (
           <footer className={styles.tableFooter}>
-            <span>
-              Mostrando <strong>{filteredProducts.length}</strong> de{" "}
-              <strong>{products.length}</strong> productos registrados
-            </span>
+            <div className={styles.paginationBox}>
+              <Pagination
+                currentPage={safeCurrentPage}
+                totalPages={totalPages}
+                totalItems={filteredProducts.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={(page) => setCurrentPage(page)}
+                onItemsPerPageChange={(size) => {
+                  setItemsPerPage(size);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
             <Link to="/productos/crear" className={styles.standaloneFormLink}>
               Abrir vista de formulario completo →
             </Link>

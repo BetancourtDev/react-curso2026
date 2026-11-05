@@ -1,18 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, RefreshCw, AlertCircle, Sparkles } from "lucide-react";
 import ItemList from "./ItemList";
+import Pagination from "./Pagination";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import { fetchProducts, deleteProduct } from "../../services/productService";
 import { useCart } from "../../context/useCart";
 import styles from "./ItemListContainer.module.css";
 
-const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
+const ItemListContainer = ({
+  title = "Catálogo de Productos",
+  defaultPageSize = 6,
+}) => {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(defaultPageSize);
   const [reloadKey, setReloadKey] = useState(0);
+
+  const catalogTopRef = useRef(null);
 
   // Estados para confirmación y eliminación de productos
   const [productToDelete, setProductToDelete] = useState(null);
@@ -92,8 +100,31 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
     return matchesSearch && matchesCategory;
   });
 
+  // Cálculo de páginas y porción de productos para la página activa
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / itemsPerPage)
+  );
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const startIndex = (safeCurrentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  const handlePageChange = (newPage) => {
+    const targetPage = Math.max(1, Math.min(newPage, totalPages));
+    setCurrentPage(targetPage);
+    catalogTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleItemsPerPageChange = (newSize) => {
+    setItemsPerPage(newSize);
+    setCurrentPage(1);
+  };
+
   return (
-    <div className={styles.container}>
+    <div ref={catalogTopRef} className={styles.container}>
       {/* Presentación del catálogo. */}
       <div className={styles.header}>
         <div className={styles.headerTitleGroup}>
@@ -111,7 +142,10 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
             placeholder="Buscar por nombre o descripción..."
             className={styles.searchInput}
           />
@@ -119,7 +153,10 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
           {searchQuery && (
             <button
               type="button"
-              onClick={() => setSearchQuery("")}
+              onClick={() => {
+                setSearchQuery("");
+                setCurrentPage(1);
+              }}
               className={styles.clearSearchBtn}
               title="Limpiar búsqueda"
             >
@@ -134,7 +171,10 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
             <button
               key={cat}
               type="button"
-              onClick={() => setSelectedCategory(cat)}
+              onClick={() => {
+                setSelectedCategory(cat);
+                setCurrentPage(1);
+              }}
               className={`${styles.categoryBtn} ${selectedCategory === cat ? styles.categoryBtnActive : ""}`}
             >
               {cat === "all" ? "Todos" : cat}
@@ -143,7 +183,7 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
         </div>
       </div>
 
-      {/* Muestra el estado de carga, el error o la lista filtrada de productos. */}
+      {/* Muestra el estado de carga, el error o la lista filtrada y paginada de productos. */}
       {loading ? (
         <div className={styles.loaderWrapper}>
           <RefreshCw size={36} className={styles.spinner} />
@@ -164,14 +204,31 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
       ) : (
         <div className={styles.listWrapper}>
           <div className={styles.resultsCount}>
-            <Sparkles size={16} /> Mostrando {filteredProducts.length} de {productos.length} productos
+            <Sparkles size={16} />{" "}
+            {filteredProducts.length > 0 ? (
+              <span>
+                Página <strong>{safeCurrentPage}</strong> de{" "}
+                <strong>{totalPages}</strong> ({filteredProducts.length}{" "}
+                productos encontrados)
+              </span>
+            ) : (
+              <span>0 productos encontrados</span>
+            )}
           </div>
           <ItemList
-            productos={filteredProducts}
+            productos={paginatedProducts}
             onRequestDelete={(prod) => {
               setDeleteError("");
               setProductToDelete(prod);
             }}
+          />
+          <Pagination
+            currentPage={safeCurrentPage}
+            totalPages={totalPages}
+            totalItems={filteredProducts.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
           />
         </div>
       )}

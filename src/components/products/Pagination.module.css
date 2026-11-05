@@ -1,0 +1,134 @@
+.paginationWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+}
+
+.infoGroup {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.rangeText {
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.rangeText strong {
+  color: var(--text-h);
+  font-weight: 700;
+}
+
+.pageSizeLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.pageSizeSelect {
+  padding: 0.35rem 0.6rem;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-h);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.pageSizeSelect:focus {
+  border-color: var(--accent);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.pagesList {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.navBtn,
+.pageBtn {
+  display: inline-flex;
+  min-width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0 0.65rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-h);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.navBtn:hover:not(:disabled),
+.pageBtn:hover:not(.pageBtnActive) {
+  border-color: var(--accent-neon);
+  color: var(--accent-neon);
+  background: var(--accent-bg);
+}
+
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pageBtnActive {
+  color: #ffffff;
+  background: var(--accent-gradient);
+  border-color: transparent;
+  box-shadow: 0 3px 10px rgba(6, 182, 212, 0.35);
+}
+
+.ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 680px) {
+  .paginationWrapper {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .infoGroup {
+    justify-content: center;
+  }
+
+  .navBtnText {
+    display: none;
+  }
+}
+
