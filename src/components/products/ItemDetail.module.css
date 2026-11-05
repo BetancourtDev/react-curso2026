@@ -1,9 +1,18 @@
+/* Contenedor general y enlace para volver al catálogo. */
 .container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   text-align: left;
   width: 100%;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .backLink {
@@ -22,6 +31,47 @@
   color: var(--accent-neon, #06b6d4);
 }
 
+.adminToolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.editProductBtn,
+.deleteProductBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 9px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editProductBtn {
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+}
+
+.editProductBtn:hover {
+  background: rgba(6, 182, 212, 0.18);
+}
+
+.deleteProductBtn {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.deleteProductBtn:hover {
+  background: rgba(220, 38, 38, 0.16);
+}
+
+/* Distribución principal: imagen del producto e información de compra. */
 .productCard {
   background: var(--bg-card, #ffffff);
   border: 1px solid var(--border, #e2e8f0);
@@ -74,6 +124,7 @@
   gap: 1.25rem;
 }
 
+/* Categoría, identificador, título, valoración y stock. */
 .metaRow {
   display: flex;
   align-items: center;
@@ -144,6 +195,7 @@
   font-size: 0.82rem;
 }
 
+/* Precio y descripción del producto. */
 .priceContainer {
   display: flex;
   align-items: baseline;
@@ -191,6 +243,7 @@
   margin: 0;
 }
 
+/* Selección de cantidad y acción de compra. */
 .actionSection {
   display: flex;
   align-items: center;
@@ -276,6 +329,7 @@
   box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35) !important;
 }
 
+/* Beneficios informativos mostrados al pie del detalle. */
 .featuresGrid {
   display: flex;
   flex-direction: column;
@@ -314,6 +368,7 @@
 }
 
 @media (max-width: 860px) {
+  /* En pantallas pequeñas, apila las columnas y las acciones de compra. */
   .productCard {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -327,4 +382,3 @@
     align-items: stretch;
   }
 }
-

@@ -1,7 +1,8 @@
 import Item from "./Item";
 import styles from "./ItemList.module.css";
 
-const ItemList = ({ productos }) => {
+const ItemList = ({ productos, onRequestDelete }) => {
+  // Informa cuando no hay productos que coincidan con la búsqueda o los filtros.
   if (!productos || productos.length === 0) {
     return (
       <div className={styles.emptyContainer}>
@@ -12,8 +13,13 @@ const ItemList = ({ productos }) => {
 
   return (
     <div className={styles.grid}>
+      {/* Usa el identificador de cada producto como clave estable de React. */}
       {productos.map((producto) => (
-        <Item key={producto.id} {...producto} />
+        <Item
+          key={producto.id}
+          {...producto}
+          onRequestDelete={onRequestDelete}
+        />
       ))}
     </div>
   );

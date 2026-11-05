@@ -25,7 +25,7 @@ const CartPage = () => {
         <CheckCircle2 size={56} className={styles.successIcon} />
         <h2 className={styles.successTitle}>¡Compra Confirmada con Éxito!</h2>
         <p className={styles.successSubtitle}>
-          Gracias por confiar en <strong>La Frutería del Abuelo</strong>. Tu orden ha sido procesada correctamente.
+          Gracias por confiar en <strong>Betancourt Tech</strong>. Tu orden ha sido procesada correctamente.
         </p>
         <div className={styles.orderBadge}>
           <span>Código de seguimiento:</span>
@@ -49,7 +49,7 @@ const CartPage = () => {
         <ShoppingBag size={64} className={styles.emptyIcon} />
         <h2 className={styles.emptyTitle}>Tu carrito está vacío</h2>
         <p className={styles.emptyText}>
-          Aún no has agregado ningún producto a tu bolsa de compras.
+          Aún no has agregado ningún producto a tu carrito de compras.
         </p>
         <Link to="/productos" className={styles.exploreBtn}>
           <ArrowLeft size={18} /> Explorar Catálogo de Productos

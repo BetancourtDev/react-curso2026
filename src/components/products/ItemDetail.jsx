@@ -1,16 +1,37 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft, ShoppingBag, Check, Star, Shield, Truck, RotateCcw } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  ShoppingBag,
+  Check,
+  Star,
+  Shield,
+  Truck,
+  RotateCcw,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import BotonFavorito from "../BotonFavorito";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import { deleteProduct } from "../../services/productService";
 import { useCart } from "../../context/useCart";
+import { useAuth } from "../../context/useAuth";
 import styles from "./ItemDetail.module.css";
 
 const ItemDetail = ({ product }) => {
+  // El producto ya llega normalizado desde el servicio de Firestore.
   const { id, title, price, description, category, image, stock, rating } = product;
   const [cantidad, setCantidad] = useState(1);
   const [agregado, setAgregado] = useState(false);
-  const { addItem } = useCart();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
+  const { addItem, removeItem, isInCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // Mantiene la cantidad elegida dentro del rango permitido por el stock.
   const handleIncrement = () => {
     if (cantidad < stock) setCantidad((prev) => prev + 1);
   };
@@ -19,20 +40,64 @@ const ItemDetail = ({ product }) => {
     if (cantidad > 1) setCantidad((prev) => prev - 1);
   };
 
+  // Agrega al carrito el producto y la cantidad seleccionada, y confirma la acción temporalmente.
   const handleAddToCart = () => {
     addItem(product, cantidad);
     setAgregado(true);
     setTimeout(() => setAgregado(false), 2500);
   };
 
+  // Elimina el producto de Firestore tras la confirmación del usuario.
+  const handleConfirmDelete = async () => {
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await deleteProduct(id);
+      if (isInCart(id)) {
+        removeItem(id);
+      }
+      navigate("/productos", { replace: true });
+    } catch (err) {
+      console.error("Error al eliminar el producto:", err);
+      setDeleteError(
+        err.message || "No se pudo eliminar el producto. Intenta nuevamente."
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <Link to="/productos" className={styles.backLink}>
-        <ArrowLeft size={18} /> Volver al catálogo
-      </Link>
+      <div className={styles.topBar}>
+        <Link to="/productos" className={styles.backLink}>
+          <ArrowLeft size={18} /> Volver al catálogo
+        </Link>
+
+        {isAuthenticated && (
+          <div className={styles.adminToolbar}>
+            <Link
+              to={`/productos/editar/${id}`}
+              className={styles.editProductBtn}
+            >
+              <Pencil size={16} /> Editar producto
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                setDeleteError("");
+                setConfirmOpen(true);
+              }}
+              className={styles.deleteProductBtn}
+            >
+              <Trash2 size={16} /> Eliminar producto
+            </button>
+          </div>
+        )}
+      </div>
 
       <div className={styles.productCard}>
-        {/* Columna Izquierda: Galería/Imagen */}
+        {/* Columna de imagen y acceso a favoritos. */}
         <div className={styles.imageColumn}>
           <div className={styles.imageWrapper}>
             <div className={styles.favBadge}>
@@ -42,7 +107,7 @@ const ItemDetail = ({ product }) => {
           </div>
         </div>
 
-        {/* Columna Derecha: Información y Compra */}
+        {/* Columna con los datos, el stock y las opciones de compra. */}
         <div className={styles.infoColumn}>
           <div className={styles.metaRow}>
             <span className={styles.categoryBadge}>{category}</span>
@@ -73,7 +138,7 @@ const ItemDetail = ({ product }) => {
             <p className={styles.descriptionText}>{description}</p>
           </div>
 
-          {/* Selector de cantidad y Botón de compra */}
+          {/* Selector de cantidad y botón para agregar al carrito. */}
           <div className={styles.actionSection}>
             <div className={styles.quantityPicker}>
               <span className={styles.pickerLabel}>Cantidad:</span>
@@ -116,7 +181,7 @@ const ItemDetail = ({ product }) => {
             </button>
           </div>
 
-          {/* Garantías y confianza */}
+          {/* Información complementaria sobre envío, garantía y devoluciones. */}
           <div className={styles.featuresGrid}>
             <div className={styles.featureItem}>
               <Truck size={18} className={styles.featureIcon} />
@@ -142,6 +207,20 @@ const ItemDetail = ({ product }) => {
           </div>
         </div>
       </div>
+
+      <ConfirmDeleteModal
+        isOpen={confirmOpen}
+        productTitle={title}
+        isDeleting={deleting}
+        error={deleteError}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          if (!deleting) {
+            setConfirmOpen(false);
+            setDeleteError("");
+          }
+        }}
+      />
     </div>
   );
 };
