@@ -11,6 +11,7 @@ const ItemDetailContainer = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Consulta el producto indicado por la ruta y evita actualizar el estado tras desmontar.
   useEffect(() => {
     let isMounted = true;
 
@@ -33,6 +34,7 @@ const ItemDetailContainer = () => {
     };
   }, [id]);
 
+  // Informa que la consulta del producto sigue en curso.
   if (loading) {
     return (
       <div className={styles.loadingWrapper}>
@@ -42,6 +44,7 @@ const ItemDetailContainer = () => {
     );
   }
 
+  // Muestra el error de consulta o el estado de producto inexistente.
   if (error || !product) {
     return (
       <div className={styles.errorWrapper}>
@@ -55,6 +58,7 @@ const ItemDetailContainer = () => {
     );
   }
 
+  // Cuando la consulta finaliza, delega la presentación en el componente de detalle.
   return <ItemDetail product={product} />;
 };
 

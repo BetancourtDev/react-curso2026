@@ -1,3 +1,4 @@
+/* Estado visible mientras se consulta el producto. */
 .loadingWrapper {
   display: flex;
   flex-direction: column;
@@ -8,6 +9,7 @@
   color: var(--text, #64748b);
 }
 
+/* Indicador animado de carga. */
 .spinner {
   animation: spin 1s linear infinite;
   color: var(--accent-neon, #06b6d4);
@@ -20,6 +22,7 @@
   }
 }
 
+/* Mensaje de error y enlace de regreso al catálogo. */
 .errorWrapper {
   display: flex;
   flex-direction: column;
@@ -66,4 +69,3 @@
   background: var(--accent-gradient-hover, linear-gradient(135deg, #0891b2, #0369a1));
   box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
 }
-

@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingBag, Eye, Star, Check } from "lucide-react";
+import { ShoppingBag, Eye, Star, Check, Pencil, Trash2 } from "lucide-react";
 import BotonFavorito from "../BotonFavorito";
 import { useCart } from "../../context/useCart";
+import { useAuth } from "../../context/useAuth";
 import styles from "./Item.module.css";
 
 const Item = (props) => {
-
+  // Acepta los nombres de campos actuales y alternativos para mantener compatibilidad con los datos.
   const id = props.id;
   const title = props.title || props.nombre || "Producto sin nombre";
   const price = Number(props.price || props.precio || 0);
@@ -14,11 +15,14 @@ const Item = (props) => {
   const category = props.category || props.categoria || "General";
   const stock = props.stock !== undefined ? Number(props.stock) : 10;
   const rating = typeof props.rating === "object" ? props.rating?.rate : Number(props.rating || 4.5);
+  const onRequestDelete = props.onRequestDelete;
 
   const [contador, setContador] = useState(1);
   const [agregado, setAgregado] = useState(false);
   const { addItem } = useCart();
+  const { isAuthenticated } = useAuth();
 
+  // Impide seleccionar una cantidad superior al stock disponible.
   const incrementar = () => {
     if (contador < stock) {
       setContador((prev) => prev + 1);
@@ -31,6 +35,7 @@ const Item = (props) => {
     }
   };
 
+  // Añade el producto y la cantidad seleccionada al carrito, y muestra una confirmación temporal.
   const handleAddToCart = () => {
     addItem(
       {
@@ -60,6 +65,7 @@ const Item = (props) => {
       </div>
 
       <div className={styles.content}>
+        {/* Presenta valoración y disponibilidad del producto. */}
         <div className={styles.ratingRow}>
           <div className={styles.stars}>
             <Star size={14} className={styles.starIcon} fill="#eab308" />
@@ -79,7 +85,7 @@ const Item = (props) => {
           <span className={styles.priceValue}>{price.toLocaleString("es-AR")}</span>
         </div>
 
-        {/* Selector de cantidad interactivo */}
+        {/* Permite elegir la cantidad y agregarla al carrito. */}
         <div className={styles.counterRow}>
           <div className={styles.counterControls}>
             <button
@@ -122,10 +128,33 @@ const Item = (props) => {
           </button>
         </div>
 
-        {/* Enlace hacia la vista de detalle (Requerimiento #3) */}
+        {/* Abre la página de detalle asociada al identificador del producto. */}
         <Link to={`/producto/${id}`} className={styles.detailLink}>
           <Eye size={16} /> Ver Detalle
         </Link>
+
+        {/* Controles de edición y eliminación visibles para usuarios autenticados. */}
+        {isAuthenticated && (
+          <div className={styles.adminActions}>
+            <Link
+              to={`/productos/editar/${id}`}
+              className={styles.editBtn}
+              title="Editar producto"
+            >
+              <Pencil size={14} /> Editar
+            </Link>
+            {onRequestDelete && (
+              <button
+                type="button"
+                onClick={() => onRequestDelete({ id, title })}
+                className={styles.deleteBtn}
+                title="Eliminar producto"
+              >
+                <Trash2 size={14} /> Eliminar
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </article>
   );

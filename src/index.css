@@ -1,4 +1,5 @@
-:root {
+:root,
+:root[data-theme="light"] {
   --text: #475569;
   --text-h: #0f172a;
   --bg: #f8fafc;
@@ -21,7 +22,7 @@
   --mono: ui-monospace, 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
 
   font: 16px/150% var(--sans);
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -30,8 +31,28 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root[data-theme="dark"] {
+  --text: #94a3b8;
+  --text-h: #f1f5f9;
+  --bg: #0b0f19;
+  --bg-card: #111827;
+  --border: #1e293b;
+  --code-bg: #131d31;
+  --accent: #38bdf8;
+  --accent-neon: #22d3ee;
+  --accent-gradient: linear-gradient(135deg, #22d3ee 0%, #38bdf8 50%, #818cf8 100%);
+  --accent-gradient-hover: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 50%, #6366f1 100%);
+  --accent-bg: rgba(34, 211, 238, 0.12);
+  --accent-border: rgba(34, 211, 238, 0.4);
+  --accent-glow: 0 0 25px rgba(34, 211, 238, 0.3);
+  --social-bg: rgba(17, 24, 39, 0.85);
+  --shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 15px 30px -5px rgba(34, 211, 238, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+  color-scheme: dark;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --text: #94a3b8;
     --text-h: #f1f5f9;
     --bg: #0b0f19;
@@ -48,7 +69,17 @@
     --social-bg: rgba(17, 24, 39, 0.85);
     --shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 15px 30px -5px rgba(34, 211, 238, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+    color-scheme: dark;
   }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-neon);
+  outline-offset: 2px;
 }
 
 * {

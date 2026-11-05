@@ -1,3 +1,4 @@
+/* Distribuye las tarjetas con columnas adaptables al ancho disponible. */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -5,6 +6,7 @@
   width: 100%;
 }
 
+/* Mensaje mostrado cuando la lista no contiene resultados. */
 .emptyContainer {
   padding: 3rem 1.5rem;
   text-align: center;
@@ -17,4 +19,3 @@
   color: var(--text, #64748b);
   font-size: 1rem;
 }
-

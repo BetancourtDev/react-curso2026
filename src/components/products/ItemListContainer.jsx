@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Search, RefreshCw, AlertCircle, Sparkles } from "lucide-react";
 import ItemList from "./ItemList";
-import { normalizeProduct } from "../../services/productService";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
+import { fetchProducts, deleteProduct } from "../../services/productService";
+import { useCart } from "../../context/useCart";
 import styles from "./ItemListContainer.module.css";
 
 const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
@@ -10,39 +12,31 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [reloadKey, setReloadKey] = useState(0);
 
-  // useEffect con fetch para cargar exclusivamente el archivo local productos.json
+  // Estados para confirmación y eliminación de productos
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
+  const { removeItem, isInCart } = useCart();
+
+  // Carga los productos de Firestore al montar el componente o al reintentar.
   useEffect(() => {
     let isMounted = true;
 
     const loadProducts = async () => {
       try {
-        const response = await fetch("/datos/productos.json");
-
-        if (!response.ok) {
-          // Intento fallback a /productos.json en la raíz de public
-          const fallbackRes = await fetch("/productos.json");
-          if (!fallbackRes.ok) {
-            throw new Error("No se pudo cargar el archivo local productos.json");
-          }
-          const fallbackData = await fallbackRes.json();
-          if (isMounted) {
-            setProductos(fallbackData.map(normalizeProduct));
-            setLoading(false);
-          }
-          return;
-        }
-
-        const data = await response.json();
-
+        const data = await fetchProducts();
         if (isMounted) {
-          setProductos(Array.isArray(data) ? data.map(normalizeProduct) : []);
+          setProductos(data);
+          setError(null);
           setLoading(false);
         }
       } catch (err) {
-        console.error("Error al cargar productos locales:", err);
+        console.error("Error al cargar productos desde Firestore:", err);
         if (isMounted) {
-          setError(err.message || "Error al cargar productos locales");
+          setError(err.message || "Error al cargar productos desde Firestore.");
           setLoading(false);
         }
       }
@@ -53,12 +47,42 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [reloadKey]);
 
-  // Lista única de categorías para filtro
+  const handleRetry = () => {
+    setLoading(true);
+    setError(null);
+    setReloadKey((prev) => prev + 1);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
+    setDeleting(true);
+    setDeleteError("");
+
+    try {
+      await deleteProduct(productToDelete.id);
+      if (isInCart(productToDelete.id)) {
+        removeItem(productToDelete.id);
+      }
+      setProductos((prev) =>
+        prev.filter((item) => String(item.id) !== String(productToDelete.id))
+      );
+      setProductToDelete(null);
+    } catch (err) {
+      console.error("Error al eliminar producto desde Firestore:", err);
+      setDeleteError(
+        err.message || "No se pudo eliminar el producto. Intenta nuevamente."
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // Crea una lista de categorías sin duplicados e incluye la opción para verlas todas.
   const categories = ["all", ...new Set(productos.map((p) => p.category).filter(Boolean))];
 
-  // Filtrado reactivo por texto y categoría
+  // Filtra los productos por coincidencia en el título, la descripción y la categoría.
   const filteredProducts = productos.filter((item) => {
     const matchesSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -70,17 +94,17 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
 
   return (
     <div className={styles.container}>
-      {/* Encabezado */}
+      {/* Presentación del catálogo. */}
       <div className={styles.header}>
         <div className={styles.headerTitleGroup}>
           <h2 className={styles.mainHeading}>{title}</h2>
           <p className={styles.subHeading}>
-            Explora nuestro catálogo de productos cargados desde nuestro archivo local de productos.
+            Explora nuestro catálogo de productos cargados desde Firestore.
           </p>
         </div>
       </div>
 
-      {/* Barra de Filtros y Búsqueda */}
+      {/* Controles para buscar productos y filtrar por categoría. */}
       <div className={styles.toolbar}>
         <div className={styles.searchBox}>
           <Search size={18} className={styles.searchIcon} />
@@ -91,6 +115,7 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
             placeholder="Buscar por nombre o descripción..."
             className={styles.searchInput}
           />
+          {/* El control de limpieza solo aparece cuando hay un término de búsqueda. */}
           {searchQuery && (
             <button
               type="button"
@@ -104,6 +129,7 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
         </div>
 
         <div className={styles.categoryFilters}>
+          {/* Cada botón selecciona una categoría o restablece el filtro. */}
           {categories.map((cat) => (
             <button
               key={cat}
@@ -117,11 +143,11 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
         </div>
       </div>
 
-      {/* Estados: Loading, Error y Grilla */}
+      {/* Muestra el estado de carga, el error o la lista filtrada de productos. */}
       {loading ? (
         <div className={styles.loaderWrapper}>
           <RefreshCw size={36} className={styles.spinner} />
-          <p className={styles.loadingText}>Cargando productos desde productos.json local...</p>
+          <p className={styles.loadingText}>Cargando productos desde Firestore...</p>
         </div>
       ) : error ? (
         <div className={styles.errorWrapper}>
@@ -129,7 +155,7 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
           <p className={styles.errorText}>Ocurrió un error: {error}</p>
           <button
             type="button"
-            onClick={() => window.location.reload()}
+            onClick={handleRetry}
             className={styles.retryBtn}
           >
             Reintentar
@@ -140,9 +166,29 @@ const ItemListContainer = ({ title = "Catálogo de Productos" }) => {
           <div className={styles.resultsCount}>
             <Sparkles size={16} /> Mostrando {filteredProducts.length} de {productos.length} productos
           </div>
-          <ItemList productos={filteredProducts} />
+          <ItemList
+            productos={filteredProducts}
+            onRequestDelete={(prod) => {
+              setDeleteError("");
+              setProductToDelete(prod);
+            }}
+          />
         </div>
       )}
+
+      <ConfirmDeleteModal
+        isOpen={Boolean(productToDelete)}
+        productTitle={productToDelete?.title}
+        isDeleting={deleting}
+        error={deleteError}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          if (!deleting) {
+            setProductToDelete(null);
+            setDeleteError("");
+          }
+        }}
+      />
     </div>
   );
 };
