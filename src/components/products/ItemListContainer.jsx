@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Search, RefreshCw, AlertCircle, Sparkles } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { RefreshCw, AlertCircle, Sparkles, X } from "lucide-react";
 import ItemList from "./ItemList";
 import Pagination from "./Pagination";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
@@ -14,11 +15,13 @@ const ItemListContainer = ({
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(defaultPageSize);
   const [reloadKey, setReloadKey] = useState(0);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get("buscar") || "";
 
   const catalogTopRef = useRef(null);
 
@@ -92,13 +95,22 @@ const ItemListContainer = ({
 
   // Filtra los productos por coincidencia en el título, la descripción y la categoría.
   const filteredProducts = productos.filter((item) => {
+    const query = searchQuery.toLowerCase();
     const matchesSearch =
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      item.title.toLowerCase().includes(query) ||
+      item.description.toLowerCase().includes(query) ||
+      item.category.toLowerCase().includes(query);
     const matchesCategory =
       selectedCategory === "all" || item.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleClearSearch = () => {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete("buscar");
+    setSearchParams(nextParams, { replace: true });
+    setCurrentPage(1);
+  };
 
   // Cálculo de páginas y porción de productos para la página activa
   const totalPages = Math.max(
@@ -135,35 +147,23 @@ const ItemListContainer = ({
         </div>
       </div>
 
-      {/* Controles para buscar productos y filtrar por categoría. */}
+      {/* Controles para filtrar por categoría y estado de búsqueda activa. */}
       <div className={styles.toolbar}>
-        <div className={styles.searchBox}>
-          <Search size={18} className={styles.searchIcon} />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
-            }}
-            placeholder="Buscar por nombre o descripción..."
-            className={styles.searchInput}
-          />
-          {/* El control de limpieza solo aparece cuando hay un término de búsqueda. */}
-          {searchQuery && (
+        {searchQuery && (
+          <div className={styles.activeSearchBadge}>
+            <span>
+              Resultados para: <strong>&ldquo;{searchQuery}&rdquo;</strong>
+            </span>
             <button
               type="button"
-              onClick={() => {
-                setSearchQuery("");
-                setCurrentPage(1);
-              }}
-              className={styles.clearSearchBtn}
-              title="Limpiar búsqueda"
+              onClick={handleClearSearch}
+              className={styles.clearSearchBadgeBtn}
+              title="Quitar filtro de búsqueda"
             >
-              ✕
+              <X size={14} /> Limpiar
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className={styles.categoryFilters}>
           {/* Cada botón selecciona una categoría o restablece el filtro. */}
