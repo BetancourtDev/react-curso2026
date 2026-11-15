@@ -76,6 +76,27 @@ const saveFallbackProducts = (products) => {
 };
 
 /**
+ * Convierte un error de Firestore en un mensaje claro para el usuario.
+ */
+const toFriendlyError = (err, action) => {
+  const code = err?.code || "";
+  if (code === "permission-denied") {
+    return new Error(
+      `No tienes permisos para ${action}. Solo los administradores pueden modificar el catálogo.`
+    );
+  }
+  if (code === "unavailable" || code === "deadline-exceeded") {
+    return new Error(
+      `No se pudo conectar con la base de datos para ${action}. Revisa tu conexión e intenta nuevamente.`
+    );
+  }
+  if (code === "not-found") {
+    return new Error(`No se pudo ${action}: el producto ya no existe.`);
+  }
+  return new Error(`No se pudo ${action}. ${err?.message || ""}`.trim());
+};
+
+/**
  * Valida los campos de un producto antes de enviarlo a Firestore.
  * Retorna un objeto con los errores por campo y un booleano isValid.
  */
@@ -206,20 +227,14 @@ export const seedProductsFromJson = async () => {
     added += 1;
   });
 
-  try {
-    if (added > 0) {
+  if (added > 0) {
+    try {
       await batch.commit();
+    } catch (err) {
+      throw toFriendlyError(err, "cargar el catálogo inicial");
     }
-    return { added, skipped };
-  } catch (err) {
-    console.warn(
-      "Aviso: Firestore bloqueó la escritura masiva, sincronizando en almacenamiento local:",
-      err.message
-    );
-    const normalized = rawItems.map((item) => normalizeProduct(item, item.id));
-    saveFallbackProducts(normalized);
-    return { added: normalized.length, skipped: 0 };
   }
+  return { added, skipped };
 };
 
 /**
@@ -266,7 +281,7 @@ export const fetchCategories = async () => {
   return [...new Set(products.map((p) => p.category).filter(Boolean))];
 };
 
-// Crea un producto en la colección de Firestore (y actualiza el respaldo local).
+// Crea un producto en Firestore. Si Firestore rechaza la escritura, lanza un error.
 export const createProduct = async (product) => {
   const { isValid, errors } = validateProductData(product);
   if (!isValid) {
@@ -284,33 +299,23 @@ export const createProduct = async (product) => {
     rating: Number(product.rating || 4.5),
   };
 
+  let productRef;
   try {
-    const productRef = await addDoc(
-      collection(db, "productos"),
-      newProductData
-    );
-    const current = await loadFallbackProducts();
-    saveFallbackProducts([
-      normalizeProduct(newProductData, productRef.id),
-      ...current,
-    ]);
-    return productRef.id;
+    productRef = await addDoc(collection(db, "productos"), newProductData);
   } catch (err) {
-    console.warn(
-      "Guardando producto en respaldo local por restricción de Firestore:",
-      err.message
-    );
-    const generatedId = "local-" + Date.now();
-    const current = await loadFallbackProducts();
-    saveFallbackProducts([
-      normalizeProduct(newProductData, generatedId),
-      ...current,
-    ]);
-    return generatedId;
+    throw toFriendlyError(err, "crear el producto");
   }
+
+  // Solo se actualiza la caché local cuando Firestore confirmó la escritura.
+  const current = await loadFallbackProducts();
+  saveFallbackProducts([
+    normalizeProduct(newProductData, productRef.id),
+    ...current,
+  ]);
+  return productRef.id;
 };
 
-// Actualiza un producto existente en Firestore (y en el respaldo local).
+// Actualiza un producto en Firestore. Si Firestore rechaza la escritura, lanza un error.
 export const updateProduct = async (id, product) => {
   const { isValid, errors } = validateProductData(product);
   if (!isValid) {
@@ -331,12 +336,10 @@ export const updateProduct = async (id, product) => {
     const productRef = doc(db, "productos", String(id));
     await updateDoc(productRef, updatedFields);
   } catch (err) {
-    console.warn(
-      "Actualizando producto en respaldo local por restricción de Firestore:",
-      err.message
-    );
+    throw toFriendlyError(err, "actualizar el producto");
   }
 
+  // Solo se actualiza la caché local cuando Firestore confirmó la escritura.
   const current = await loadFallbackProducts();
   const updatedList = current.map((item) =>
     String(item.id) === String(id)
@@ -346,18 +349,16 @@ export const updateProduct = async (id, product) => {
   saveFallbackProducts(updatedList);
 };
 
-// Elimina un producto de Firestore (y del respaldo local).
+// Elimina un producto de Firestore. Si Firestore rechaza la escritura, lanza un error.
 export const deleteProduct = async (id) => {
   try {
     const productRef = doc(db, "productos", String(id));
     await deleteDoc(productRef);
   } catch (err) {
-    console.warn(
-      "Eliminando producto en respaldo local por restricción de Firestore:",
-      err.message
-    );
+    throw toFriendlyError(err, "eliminar el producto");
   }
 
+  // Solo se actualiza la caché local cuando Firestore confirmó la escritura.
   const current = await loadFallbackProducts();
   saveFallbackProducts(
     current.filter((item) => String(item.id) !== String(id))
