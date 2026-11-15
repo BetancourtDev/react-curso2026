@@ -1,14 +1,17 @@
-import { Navigate, useLocation } from "react-router-dom";
-import { RefreshCw } from "lucide-react";
+import { Link, Navigate, useLocation } from "react-router-dom";
+import { RefreshCw, ShieldAlert } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
 import styles from "./ProtectedRoute.module.css";
 
 /**
- * ProtectedRoute: Componente de orden superior que restringe el acceso
- * a rutas exclusivas para usuarios autenticados.
+ * ProtectedRoute: restringe el acceso a rutas exclusivas para usuarios autenticados.
+ * Con `requireAdmin`, además exige que el usuario tenga rol de administrador.
+ *
+ * Importante: esto solo controla la interfaz. La seguridad real la imponen
+ * las reglas de Firestore (firestore.rules).
  */
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const ProtectedRoute = ({ children, requireAdmin = false }) => {
+  const { isAuthenticated, isAdmin, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -24,8 +27,21 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  if (requireAdmin && !isAdmin) {
+    return (
+      <div className={styles.loadingContainer} role="alert">
+        <ShieldAlert size={28} className={styles.deniedIcon} />
+        <p className={styles.loadingText}>
+          No tienes permisos de administrador para ver esta página.
+        </p>
+        <Link to="/" className={styles.homeLink}>
+          Volver al inicio
+        </Link>
+      </div>
+    );
+  }
+
   return children;
 };
 
 export default ProtectedRoute;
-

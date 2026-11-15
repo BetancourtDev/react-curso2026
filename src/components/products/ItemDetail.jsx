@@ -28,7 +28,7 @@ const ItemDetail = ({ product }) => {
   const [deleteError, setDeleteError] = useState("");
 
   const { addItem, removeItem, isInCart } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAdmin } = useAuth();
   const navigate = useNavigate();
 
   // Mantiene la cantidad elegida dentro del rango permitido por el stock.
@@ -74,7 +74,7 @@ const ItemDetail = ({ product }) => {
           <ArrowLeft size={18} /> Volver al catálogo
         </Link>
 
-        {isAuthenticated && (
+        {isAdmin && (
           <div className={styles.adminToolbar}>
             <Link
               to={`/productos/editar/${id}`}

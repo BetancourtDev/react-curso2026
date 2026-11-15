@@ -24,3 +24,13 @@
   }
 }
 
+
+.deniedIcon {
+  color: var(--accent);
+}
+
+.homeLink {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: underline;
+}

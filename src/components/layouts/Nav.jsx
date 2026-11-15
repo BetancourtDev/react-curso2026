@@ -16,7 +16,7 @@ import { useAuth } from "../../context/useAuth";
 import styles from "./Nav.module.css";
 
 const Nav = ({ onNavigate }) => {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, isAdmin, user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -125,18 +125,20 @@ const Nav = ({ onNavigate }) => {
             Productos
           </NavLink>
         </li>
-        <li className={styles.navItem}>
-          <NavLink
-            to="/admin"
-            onClick={onNavigate}
-            className={({ isActive }) =>
-              isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink
-            }
-          >
-            <LayoutDashboard size={16} />
-            <span>Panel Admin</span>
-          </NavLink>
-        </li>
+        {isAdmin && (
+          <li className={styles.navItem}>
+            <NavLink
+              to="/admin"
+              onClick={onNavigate}
+              className={({ isActive }) =>
+                isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink
+              }
+            >
+              <LayoutDashboard size={16} />
+              <span>Panel Admin</span>
+            </NavLink>
+          </li>
+        )}
 
         {isAuthenticated ? (
           <>

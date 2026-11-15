@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Un usuario es administrador si existe el documento admins/{uid}.
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Catálogo: lectura pública, escritura solo para administradores.
+    match /productos/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Cada usuario puede consultar solo su propio documento de rol.
+    // Nadie puede crear o modificar admins desde el cliente:
+    // se gestionan desde la consola de Firebase.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+  }
+}
