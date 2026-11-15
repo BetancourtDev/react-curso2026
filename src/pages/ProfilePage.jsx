@@ -4,7 +4,7 @@ import { useAuth } from "../context/useAuth";
 import styles from "./ProfilePage.module.css";
 
 const ProfilePage = () => {
-  const { user, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -63,15 +63,17 @@ const ProfilePage = () => {
         <div className={styles.actionsSection}>
           <h2 className={styles.sectionTitle}>Accesos rápidos</h2>
           <div className={styles.actionsGrid}>
-            <Link to="/admin" className={styles.actionCard}>
-              <span className={styles.actionIcon}>
-                <LayoutDashboard size={20} />
-              </span>
-              <div>
-                <strong>Panel de Administración</strong>
-                <p>Gestionar inventario, crear, editar y eliminar productos</p>
-              </div>
-            </Link>
+            {isAdmin && (
+              <Link to="/admin" className={styles.actionCard}>
+                <span className={styles.actionIcon}>
+                  <LayoutDashboard size={20} />
+                </span>
+                <div>
+                  <strong>Panel de Administración</strong>
+                  <p>Gestionar inventario, crear, editar y eliminar productos</p>
+                </div>
+              </Link>
+            )}
 
             <Link to="/carrito" className={styles.actionCard}>
               <span className={styles.actionIcon}>

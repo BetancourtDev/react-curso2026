@@ -6,7 +6,8 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "../firebase/config";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase/config";
 import { AuthContext } from "./AuthContextDefinition";
 
 /**
@@ -16,11 +17,25 @@ import { AuthContext } from "./AuthContextDefinition";
  */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setLoading(true);
+      let admin = false;
+      if (currentUser) {
+        // Un usuario es admin si existe el documento admins/{uid} en Firestore.
+        // Las reglas de Firestore (firestore.rules) usan la misma comprobación.
+        try {
+          const adminDoc = await getDoc(doc(db, "admins", currentUser.uid));
+          admin = adminDoc.exists();
+        } catch (err) {
+          console.warn("No se pudo verificar el rol de administrador:", err.message);
+        }
+      }
       setUser(currentUser);
+      setIsAdmin(admin);
       setLoading(false);
     });
 
@@ -62,6 +77,7 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         isAuthenticated: Boolean(user),
+        isAdmin,
         login,
         register,
         logout,

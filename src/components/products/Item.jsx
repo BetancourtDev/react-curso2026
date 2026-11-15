@@ -20,7 +20,7 @@ const Item = (props) => {
   const [contador, setContador] = useState(1);
   const [agregado, setAgregado] = useState(false);
   const { addItem } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAdmin } = useAuth();
 
   // Impide seleccionar una cantidad superior al stock disponible.
   const incrementar = () => {
@@ -133,8 +133,8 @@ const Item = (props) => {
           <Eye size={16} /> Ver Detalle
         </Link>
 
-        {/* Controles de edición y eliminación visibles para usuarios autenticados. */}
-        {isAuthenticated && (
+        {/* Controles de edición y eliminación visibles solo para administradores. */}
+        {isAdmin && (
           <div className={styles.adminActions}>
             <Link
               to={`/productos/editar/${id}`}
