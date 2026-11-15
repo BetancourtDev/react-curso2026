@@ -67,6 +67,16 @@ const loadFallbackProducts = async () => {
   return normalized;
 };
 
+// Lee solo la caché local (sin recurrir a productos.json).
+const readCachedProducts = () => {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(LOCAL_FALLBACK_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
 const saveFallbackProducts = (products) => {
   try {
     localStorage.setItem(LOCAL_FALLBACK_KEY, JSON.stringify(products));
@@ -239,32 +249,18 @@ export const seedProductsFromJson = async () => {
 
 /**
  * Obtiene todos los documentos de la colección "productos" en Firestore.
- * Si la colección está vacía, la pobla automáticamente desde productos.json.
- * Si Firestore presenta bloqueo de permisos o conexión, utiliza el respaldo de productos.json.
+ * Si la colección está vacía devuelve una lista vacía: poblarla es una acción
+ * manual del administrador (botón "Poblar desde productos.json" del panel).
+ * Solo si Firestore no responde (error de red o permisos) se usa el respaldo local.
  */
 export const fetchProducts = async () => {
   try {
     const snapshot = await getDocs(collection(db, "productos"));
-
-    if (!snapshot.empty) {
-      const firestoreProducts = snapshot.docs.map((product) =>
-        normalizeProduct(product.data(), product.id)
-      );
-      saveFallbackProducts(firestoreProducts);
-      return firestoreProducts;
-    }
-
-    // Si la colección en Firestore está vacía, intentamos poblarla automáticamente
-    await seedProductsFromJson();
-    const seededSnapshot = await getDocs(collection(db, "productos"));
-
-    if (!seededSnapshot.empty) {
-      const seededProducts = seededSnapshot.docs.map((product) =>
-        normalizeProduct(product.data(), product.id)
-      );
-      saveFallbackProducts(seededProducts);
-      return seededProducts;
-    }
+    const firestoreProducts = snapshot.docs.map((product) =>
+      normalizeProduct(product.data(), product.id)
+    );
+    saveFallbackProducts(firestoreProducts);
+    return firestoreProducts;
   } catch (err) {
     console.warn(
       "Usando catálogo de respaldo (/datos/productos.json) debido a respuesta de Firestore:",
@@ -307,7 +303,7 @@ export const createProduct = async (product) => {
   }
 
   // Solo se actualiza la caché local cuando Firestore confirmó la escritura.
-  const current = await loadFallbackProducts();
+  const current = readCachedProducts();
   saveFallbackProducts([
     normalizeProduct(newProductData, productRef.id),
     ...current,
@@ -340,7 +336,7 @@ export const updateProduct = async (id, product) => {
   }
 
   // Solo se actualiza la caché local cuando Firestore confirmó la escritura.
-  const current = await loadFallbackProducts();
+  const current = readCachedProducts();
   const updatedList = current.map((item) =>
     String(item.id) === String(id)
       ? normalizeProduct({ ...item, ...updatedFields }, id)
@@ -359,7 +355,7 @@ export const deleteProduct = async (id) => {
   }
 
   // Solo se actualiza la caché local cuando Firestore confirmó la escritura.
-  const current = await loadFallbackProducts();
+  const current = readCachedProducts();
   saveFallbackProducts(
     current.filter((item) => String(item.id) !== String(id))
   );
