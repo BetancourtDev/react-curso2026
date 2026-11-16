@@ -10,12 +10,12 @@
 .emptyContainer {
   padding: 3rem 1.5rem;
   text-align: center;
-  background: var(--code-bg, #f1f5f9);
-  border-radius: 12px;
-  border: 1px dashed var(--border, #e2e8f0);
+  background: var(--code-bg);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
 }
 
 .emptyText {
-  color: var(--text, #64748b);
+  color: var(--text);
   font-size: 1rem;
 }

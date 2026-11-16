@@ -117,11 +117,15 @@ const ItemDetail = ({ product }) => {
           <h1 className={styles.title}>{title}</h1>
 
           <div className={styles.ratingRow}>
-            <div className={styles.stars}>
-              <Star size={16} fill="#eab308" className={styles.starIcon} />
-              <span className={styles.ratingVal}>{typeof rating === "number" ? rating.toFixed(1) : "4.8"}</span>
-            </div>
-            <span className={styles.divider}>•</span>
+            {typeof rating === "number" && (
+              <>
+                <div className={styles.stars}>
+                  <Star size={16} fill="#eab308" className={styles.starIcon} />
+                  <span className={styles.ratingVal}>{rating.toFixed(1)}</span>
+                </div>
+                <span className={styles.divider}>•</span>
+              </>
+            )}
             <span className={styles.stockStatus}>
               {stock > 0 ? `Disponible (${stock} unidades en stock)` : "Agotado temporalmente"}
             </span>

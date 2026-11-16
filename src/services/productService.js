@@ -27,10 +27,12 @@ export const normalizeProduct = (item, id = item.id) => ({
     (Array.isArray(item.images) ? item.images[0] : "") ||
     "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80",
   stock: item.stock !== undefined ? Number(item.stock) : 15,
-  rating:
-    typeof item.rating === "object"
-      ? Number(item.rating?.rate || 4.5)
-      : Number(item.rating || 4.5),
+  // Sin valoración real se deja en null para no mostrar un puntaje inventado.
+  rating: (() => {
+    const raw = typeof item.rating === "object" ? item.rating?.rate : item.rating;
+    const value = Number(raw);
+    return raw != null && raw !== "" && Number.isFinite(value) ? value : null;
+  })(),
 });
 
 /**

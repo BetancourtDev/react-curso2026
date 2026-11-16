@@ -11,9 +11,9 @@
   left: 1rem;
   z-index: 200;
   padding: 0.65rem 1.15rem;
-  color: #ffffff;
-  background: var(--accent-gradient);
-  border-radius: 10px;
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border-radius: var(--radius-sm);
   font-weight: 700;
   text-decoration: none;
   box-shadow: var(--shadow-lg);
