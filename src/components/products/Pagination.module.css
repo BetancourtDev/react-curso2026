@@ -5,9 +5,9 @@
   gap: 1rem;
   margin-top: 1.25rem;
   padding: 1rem 1.25rem;
-  background: var(--bg-card, #ffffff);
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow);
   flex-wrap: wrap;
 }
@@ -46,7 +46,7 @@
   color: var(--text-h);
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   outline: none;
   transition: border-color 0.2s ease;
@@ -83,7 +83,7 @@
   color: var(--text-h);
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -101,10 +101,9 @@
 }
 
 .pageBtnActive {
-  color: #ffffff;
-  background: var(--accent-gradient);
+  color: var(--accent-contrast);
+  background: var(--accent);
   border-color: transparent;
-  box-shadow: 0 3px 10px rgba(6, 182, 212, 0.35);
 }
 
 .ellipsis {

@@ -1,8 +1,8 @@
 .footer {
   margin-top: auto;
   width: 100%;
-  border-top: 1px solid var(--border, #e2e8f0);
-  background: var(--bg-card, #ffffff);
+  border-top: 1px solid var(--border);
+  background: var(--bg-card);
   box-sizing: border-box;
 }
 
@@ -15,9 +15,9 @@
 
 /* Sección de Equipo */
 .teamSection {
-  background: var(--social-bg, rgba(241, 245, 249, 0.7));
+  background: var(--social-bg);
   padding: 3rem 0 2.5rem;
-  border-bottom: 1px solid var(--border, #e2e8f0);
+  border-bottom: 1px solid var(--border);
 }
 
 .sectionHeader {
@@ -29,28 +29,28 @@
 .sectionBadge {
   display: inline-block;
   padding: 0.25rem 0.85rem;
-  background: var(--accent-bg, rgba(6, 182, 212, 0.1));
-  color: var(--accent-neon, #06b6d4);
+  background: var(--accent-bg);
+  color: var(--accent-neon);
   font-size: 0.75rem;
   font-weight: 700;
-  border-radius: 9999px;
+  border-radius: var(--radius-pill);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 0.5rem;
-  border: 1px solid var(--accent-border, rgba(6, 182, 212, 0.3));
+  border: 1px solid var(--accent-border);
 }
 
 .sectionTitle {
   font-size: 1.65rem;
   font-weight: 700;
-  color: var(--text-h, #0f172a);
+  color: var(--text-h);
   margin: 0 0 0.5rem;
   letter-spacing: -0.5px;
 }
 
 .sectionSubtitle {
   font-size: 0.95rem;
-  color: var(--text, #64748b);
+  color: var(--text);
   margin: 0;
   line-height: 1.5;
 }
@@ -86,12 +86,12 @@
   gap: 0.5rem;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-h, #0f172a);
+  color: var(--text-h);
   margin: 0 0 0.5rem;
 }
 
 .titleIcon {
-  color: var(--accent-neon, #06b6d4);
+  color: var(--accent-neon);
 }
 
 .branchList {
@@ -108,20 +108,20 @@
   flex-direction: column;
   gap: 0.15rem;
   font-size: 0.88rem;
-  border-left: 2px solid var(--accent-neon, #06b6d4);
+  border-left: 2px solid var(--accent-neon);
   padding-left: 0.75rem;
 }
 
 .branchItem strong {
-  color: var(--text-h, #0f172a);
+  color: var(--text-h);
 }
 
 .branchItem span {
-  color: var(--text, #64748b);
+  color: var(--text);
 }
 
 .branchItem small {
-  color: var(--accent-neon, #06b6d4);
+  color: var(--accent-neon);
   font-size: 0.75rem;
   font-weight: 500;
 }
@@ -140,17 +140,17 @@
   display: flex;
   align-items: flex-start;
   gap: 0.6rem;
-  color: var(--text, #64748b);
+  color: var(--text);
 }
 
 .listIcon {
-  color: var(--accent-neon, #06b6d4);
+  color: var(--accent-neon);
   flex-shrink: 0;
   margin-top: 3px;
 }
 
 .contactList a {
-  color: var(--accent-neon, #06b6d4);
+  color: var(--accent-neon);
   text-decoration: none;
   word-break: break-all;
   transition: opacity 0.2s;
@@ -163,7 +163,7 @@
 
 .newsletterText {
   font-size: 0.9rem;
-  color: var(--text, #64748b);
+  color: var(--text);
   line-height: 1.5;
   margin: 0;
 }
@@ -177,37 +177,35 @@
 .newsletterInput {
   flex: 1;
   padding: 0.65rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--border, #e2e8f0);
-  background: var(--code-bg, #f1f5f9);
-  color: var(--text-h, #0f172a);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--text-h);
   font-size: 0.9rem;
   outline: none;
   transition: all 0.2s;
 }
 
 .newsletterInput:focus {
-  border-color: var(--accent-neon, #06b6d4);
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+  border-color: var(--accent-neon);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
 }
 
 .newsletterButton {
-  background: var(--accent-gradient, linear-gradient(135deg, #06b6d4, #0284c7));
-  color: #ffffff;
+  background: var(--accent);
+  color: var(--accent-contrast);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 0 1.25rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
 }
 
 .newsletterButton:hover {
-  background: var(--accent-gradient-hover, linear-gradient(135deg, #0891b2, #0369a1));
-  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.45);
+  filter: brightness(1.08);
 }
 
 .successMsg {
@@ -218,13 +216,13 @@
   background: rgba(16, 185, 129, 0.1);
   border: 1px solid rgba(16, 185, 129, 0.3);
   color: #10b981;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 0.85rem;
 }
 
 /* Barra de Legales */
 .bottomBar {
-  border-top: 1px solid var(--border, #e2e8f0);
+  border-top: 1px solid var(--border);
   padding-top: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -240,13 +238,13 @@
 
 .copyright {
   font-size: 0.88rem;
-  color: var(--text-h, #0f172a);
+  color: var(--text-h);
   margin: 0;
 }
 
 .ipNotice {
   font-size: 0.78rem;
-  color: var(--text, #64748b);
+  color: var(--text);
   line-height: 1.4;
   margin: 0;
 }
@@ -261,7 +259,7 @@
 }
 
 .legalLinks a {
-  color: var(--accent-neon, #06b6d4);
+  color: var(--accent-neon);
   text-decoration: none;
   transition: opacity 0.2s;
 }
@@ -271,7 +269,7 @@
 }
 
 .legalLinks span {
-  color: var(--border, #e2e8f0);
+  color: var(--border);
 }
 
 @media (max-width: 768px) {

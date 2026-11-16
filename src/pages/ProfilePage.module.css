@@ -7,7 +7,7 @@
   padding: clamp(1.5rem, 4vw, 2.5rem);
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
 }
 
@@ -25,10 +25,9 @@
   width: 64px;
   height: 64px;
   place-items: center;
-  color: #fff;
-  background: var(--accent-gradient);
-  border-radius: 18px;
-  box-shadow: var(--accent-glow);
+  color: var(--accent-contrast);
+  background: var(--accent);
+  border-radius: var(--radius-lg);
 }
 
 .headerInfo {
@@ -48,7 +47,7 @@
   color: var(--accent);
   background: var(--accent-bg);
   border: 1px solid var(--accent-border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 
 .title {
@@ -75,7 +74,7 @@
   padding: 1rem 1.15rem;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 }
 
 .infoIcon {
@@ -119,13 +118,12 @@
   text-decoration: none;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .actionCard:hover {
   border-color: var(--accent-border);
-  transform: translateY(-2px);
   box-shadow: var(--shadow);
 }
 
@@ -137,7 +135,7 @@
   place-items: center;
   color: var(--accent);
   background: var(--accent-bg);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
 }
 
 .actionCard strong {
@@ -167,7 +165,7 @@
   color: #dc2626;
   background: rgba(220, 38, 38, 0.08);
   border: 1px solid rgba(220, 38, 38, 0.25);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease, transform 0.2s ease;
@@ -175,7 +173,6 @@
 
 .logoutButton:hover {
   background: rgba(220, 38, 38, 0.14);
-  transform: translateY(-1px);
 }
 
 @media (max-width: 640px) {

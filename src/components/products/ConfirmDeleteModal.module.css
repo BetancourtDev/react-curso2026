@@ -17,9 +17,9 @@
   width: 100%;
   max-width: 440px;
   padding: 1.75rem;
-  background: var(--bg-card, #ffffff);
-  border: 1px solid var(--border, #e2e8f0);
-  border-radius: 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.35);
   text-align: center;
 }
@@ -35,7 +35,7 @@
   color: var(--text);
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
@@ -54,7 +54,7 @@
   color: #dc2626;
   background: rgba(220, 38, 38, 0.1);
   border: 1px solid rgba(220, 38, 38, 0.25);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
 }
 
 .title {
@@ -81,7 +81,7 @@
   color: #b91c1c;
   background: #fef2f2;
   border: 1px solid #fecaca;
-  border-radius: 9px;
+  border-radius: var(--radius-sm);
 }
 
 .actions {
@@ -100,7 +100,7 @@
   padding: 0.6rem 1rem;
   font-size: 0.9rem;
   font-weight: 600;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -124,7 +124,6 @@
 
 .confirmBtn:hover:not(:disabled) {
   background: linear-gradient(135deg, #dc2626, #b91c1c);
-  transform: translateY(-1px);
 }
 
 .cancelBtn:disabled,

@@ -17,47 +17,47 @@ import styles from "./HomePage.module.css";
 const HERO_SLIDES = [
   {
     id: 1,
-    badge: "CYBER TECH WEEK • HASTA 20% OFF",
+    badge: "CYBER TECH WEEK · 20% OFF",
     badgeIcon: Flame,
-    title: "Potencia tu Setup Gamer al Máximo Nivel",
+    title: "Tu setup gamer, al máximo",
     subtitle:
-      "Monitores curvos de 165Hz, teclados mecánicos RGB y periféricos ultralivianos con hasta 12 cuotas sin interés.",
+      "Monitores de 165 Hz, teclados mecánicos y periféricos livianos, en hasta 12 cuotas sin interés.",
     discountTag: "Cupón: BETANCOURT20",
     image:
       "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=900&q=80",
-    primaryText: "Explorar Ofertas",
+    primaryText: "Ver ofertas",
     primaryLink: "/productos",
-    secondaryText: "Ver Carrito",
+    secondaryText: "Ver carrito",
     secondaryLink: "/carrito",
   },
   {
     id: 2,
-    badge: "SONIDO HI-RES & STREAMING PRO",
+    badge: "AUDIO HI-RES",
     badgeIcon: Sparkles,
-    title: "Audio Inmersivo con Cancelación Activa",
+    title: "Sonido inmersivo, cero ruido",
     subtitle:
-      "Descubre auriculares inalámbricos, micrófonos de estudio y parlantes waterproof diseñados para creadores y audiófilos.",
+      "Auriculares con cancelación activa, micrófonos de estudio y parlantes para creadores y audiófilos.",
     discountTag: "Envío GRATIS > AR$ 50.000",
     image:
       "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80",
-    primaryText: "Ver Audio y Tecnología",
+    primaryText: "Ver audio",
     primaryLink: "/productos",
-    secondaryText: "Ir al Carrito",
+    secondaryText: "Ir al carrito",
     secondaryLink: "/carrito",
   },
   {
     id: 3,
-    badge: "NUEVOS INGRESOS • ALTO RENDIMIENTO",
+    badge: "NUEVOS INGRESOS",
     badgeIcon: Zap,
-    title: "Notebooks RTX, Drones 4K y Realidad Virtual",
+    title: "Notebooks, drones y VR de última generación",
     subtitle:
-      "Equipamiento de última generación con garantía oficial de 12 meses y 15% de descuento extra abonando por transferencia.",
-    discountTag: "15% OFF Transferencia",
+      "Con garantía oficial de 12 meses y 15% OFF extra pagando por transferencia.",
+    discountTag: "15% OFF transferencia",
     image:
       "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=900&q=80",
-    primaryText: "Ver Catálogo Completo",
+    primaryText: "Ver catálogo",
     primaryLink: "/productos",
-    secondaryText: "Mi Carrito",
+    secondaryText: "Mi carrito",
     secondaryLink: "/carrito",
   },
 ];
@@ -65,16 +65,20 @@ const HERO_SLIDES = [
 const HomePage = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [paused, setPaused] = useState(false);
+  // Sin rotación automática si el usuario pidió reducir el movimiento.
+  const [reducedMotion] = useState(
+    () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
+  );
 
   useEffect(() => {
-    if (paused) return undefined;
+    if (paused || reducedMotion) return undefined;
 
     const interval = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % HERO_SLIDES.length);
     }, 5500);
 
     return () => clearInterval(interval);
-  }, [paused]);
+  }, [paused, reducedMotion]);
 
   const prevSlide = () => {
     setActiveSlide(
@@ -96,6 +100,8 @@ const HomePage = () => {
         className={styles.heroSlider}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
         aria-label="Carrusel de promociones principales"
       >
         <div className={styles.slideGrid} key={slide.id}>
@@ -176,7 +182,7 @@ const HomePage = () => {
         <div className={styles.perkCard}>
           <Truck className={styles.perkIcon} size={28} />
           <div>
-            <h4 className={styles.perkTitle}>Envíos Rápidos</h4>
+            <h4 className={styles.perkTitle}>Envíos rápidos</h4>
             <p className={styles.perkDesc}>
               Entregas seguras en 24/48 horas a todo el territorio nacional.
             </p>
@@ -185,7 +191,7 @@ const HomePage = () => {
         <div className={styles.perkCard}>
           <ShieldCheck className={styles.perkIcon} size={28} />
           <div>
-            <h4 className={styles.perkTitle}>Compra 100% Protegida</h4>
+            <h4 className={styles.perkTitle}>Compra protegida</h4>
             <p className={styles.perkDesc}>
               Garantía oficial y pagos encriptados de extremo a extremo.
             </p>
@@ -194,7 +200,7 @@ const HomePage = () => {
         <div className={styles.perkCard}>
           <Headphones className={styles.perkIcon} size={28} />
           <div>
-            <h4 className={styles.perkTitle}>Soporte Dedicado</h4>
+            <h4 className={styles.perkTitle}>Soporte real</h4>
             <p className={styles.perkDesc}>
               Equipo de asesores humanos listos para resolver cualquier consulta.
             </p>
@@ -204,7 +210,7 @@ const HomePage = () => {
 
       {/* Catálogo en Home */}
       <section className={styles.catalogSection}>
-        <ItemListContainer title="Nuestros Productos Destacados" />
+        <ItemListContainer title="Productos destacados" />
       </section>
     </div>
   );
