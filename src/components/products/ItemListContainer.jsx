@@ -23,6 +23,13 @@ const ItemListContainer = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("buscar") || "";
 
+  // Al cambiar el texto de búsqueda se vuelve a la primera página.
+  const [lastSearchQuery, setLastSearchQuery] = useState(searchQuery);
+  if (lastSearchQuery !== searchQuery) {
+    setLastSearchQuery(searchQuery);
+    setCurrentPage(1);
+  }
+
   const catalogTopRef = useRef(null);
 
   // Estados para confirmación y eliminación de productos
