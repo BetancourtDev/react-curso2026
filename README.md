@@ -5,7 +5,7 @@ Tienda online hecha con React, React Router y Firebase (Authentication y Firesto
 ## Links
 
 - Repositorio: https://github.com/BetancourtDev/react-curso2026
-- Deploy: **COMPLETAR con el link de Vercel / Netlify / GitHub Pages**
+- Deploy: https://tienda-curso-react.netlify.app/
 
 ## Acceso al panel de administración
 
