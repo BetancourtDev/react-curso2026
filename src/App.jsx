@@ -1,20 +1,28 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/layouts/Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import HomePage from "./pages/HomePage";
-import ProductsPage from "./pages/ProductsPage";
-import AdminDashboardPage from "./pages/AdminDashboardPage";
-import CreateProductPage from "./pages/CreateProductPage";
-import EditProductPage from "./pages/EditProductPage";
-import ProductDetailPage from "./pages/ProductDetailPage";
-import CartPage from "./pages/CartPage";
-import LoginPage from "./pages/LoginPage";
-import ProfilePage from "./pages/ProfilePage";
-import NotFoundPage from "./pages/NotFoundPage";
+const ProductsPage = lazy(() => import("./pages/ProductsPage"));
+const AdminDashboardPage = lazy(() => import("./pages/AdminDashboardPage"));
+const CreateProductPage = lazy(() => import("./pages/CreateProductPage"));
+const EditProductPage = lazy(() => import("./pages/EditProductPage"));
+const ProductDetailPage = lazy(() => import("./pages/ProductDetailPage"));
+const CartPage = lazy(() => import("./pages/CartPage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 const App = () => {
   return (
     <Layout>
+      <Suspense
+        fallback={
+          <p role="status" aria-live="polite" style={{ padding: "3rem 1rem", textAlign: "center" }}>
+            Cargando...
+          </p>
+        }
+      >
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/productos" element={<ProductsPage />} />
@@ -56,6 +64,7 @@ const App = () => {
         />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </Suspense>
     </Layout>
   );
 };
