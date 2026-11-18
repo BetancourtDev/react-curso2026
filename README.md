@@ -1,65 +1,89 @@
-# Requerimientos del proyecto
+# Tienda Online – Proyecto Final React JS 2026-2C
 
-## Requerimiento #1: Estructura y Layout
+Tienda online hecha con React, React Router y Firebase (Authentication y Firestore). Incluye catálogo con búsqueda y paginación, carrito de compras, autenticación de usuarios y un panel de administración para gestionar productos.
 
-Estructura Organizada: Arquitectura modular dividida en 
-- components/layouts
-- components/products
-- components/cart
-- components/team
-- context
-- pages
-- services
+## Links
 
-## Layout.jsx: Integra 
-- Header.jsx: con identidad de marca, 
-- Nav.jsx 
-- Footer.jsx
+- Repositorio: https://github.com/BetancourtDev/react-curso2026
+- Deploy: **COMPLETAR con el link de Vercel / Netlify / GitHub Pages**
 
-## Requerimiento #2: Catálogo de productos con datos de una API
-La aplicación debe tener un componente como ItemListContainer.jsx (o un componente que cumpla esa función) que cargue la información de productos desde un archivo productos.json local usando useEffect y fetch.
-Los productos deben renderizarse utilizando un componente reutilizable Item.jsx, que reciba los datos por props.
+## Acceso al panel de administración
 
-## Requerimiento #3: Sistema de ruteo
-La navegación debe ser gestionada por react-router-dom.
-Deben existir, como mínimo, las siguientes rutas:
-/: Vista principal o de bienvenida.
-/productos:
-/producto/:id: Vista de detalle de un único producto
-/carrito: Vista del carrito de compras.
-El NavBar debe utilizar el componente <Link> para una navegación fluida sin recargas de página.
+| Campo      | Valor             |
+| ---------- | ----------------- |
+| Usuario    | `admin@gmail.com` |
+| Contraseña | `admin123`        |
 
-## Requerimiento #4: Carrito de compras con Context API
-## Requerimiento #5:  Autenticación de usuarios
+Ruta del panel: `/admin`. Solo los usuarios con rol de administrador pueden crear, editar o eliminar productos.
 
-- Crear un AuthContext para manejar el estado de autenticación (usuario logueado/no logueado).
-- Implementar formularios de login y registro que se comuniquen con Firebase Authentication.
-- Proteger rutas, como el panel de gestión o el perfil, permitiendo el acceso únicamente a usuarios autenticados.
+## Tecnologías
 
-## Requerimiento #6: CRUD de productos con Firebase
+- React 19 + Vite
+- React Router DOM (rutas y rutas protegidas)
+- Context API (carrito y autenticación)
+- Firebase Authentication y Cloud Firestore
+- CSS Modules (estilos y diseño responsive)
+- lucide-react (íconos)
 
-Objetivo: permitir la administración completa del catálogo de productos mediante operaciones de creación, lectura, actualización y eliminación.
+## Funcionalidades
 
-6.1 Formulario para agregar productos
+- **Catálogo** con productos desde Firestore, buscador en tiempo real, filtro por categoría y paginador.
+- **Detalle de producto** en `/producto/:id`.
+- **Carrito** (`CartContext`): agregar, eliminar, aumentar, disminuir y vaciar; se guarda en `localStorage`.
+- **Autenticación** (`AuthContext`): registro, login y logout con Firebase Auth.
+- **Rutas protegidas**: `/perfil` para usuarios autenticados y `/admin` solo para administradores.
+- **CRUD de productos** con formulario controlado y validaciones (nombre obligatorio, precio mayor que cero, stock entero, URL de imagen válida), confirmación antes de eliminar, indicadores de carga y mensajes de error.
+- **Diseño responsive** para móvil, tablet y escritorio.
 
-- Implementar un formulario controlado para agregar nuevos productos, con validaciones (nombre obligatorio, precio mayor que cero, etc.).
-- Incorporar la funcionalidad para editar y eliminar productos e- xistentes.
-Implementar una confirmación antes de eliminar un producto para mejorar la experiencia de usuario (UX).
+## Rutas
 
-6.2 Manejo de estados de carga y errores 
-- Mostrar indicadores de carga mientras se obtienen los datos de la API.
-- Gestionar y mostrar mensajes de error al usuario si la comunicación con la API falla.
+| Ruta                       | Descripción                         | Acceso        |
+| -------------------------- | ----------------------------------- | ------------- |
+| `/`                        | Inicio                              | Público       |
+| `/productos`               | Catálogo con búsqueda y paginación  | Público       |
+| `/producto/:id`            | Detalle de producto                 | Público       |
+| `/carrito`                 | Carrito de compras                  | Público       |
+| `/login` y `/registro`     | Autenticación                       | Público       |
+| `/perfil`                  | Perfil del usuario                  | Autenticado   |
+| `/admin`                   | Panel de gestión de productos       | Administrador |
+| `/productos/crear`         | Formulario para crear producto      | Administrador |
+| `/productos/editar/:id`    | Formulario para editar producto     | Administrador |
 
-## Requerimiento #7: Optimización del diseño y responsividad
+## Estructura del proyecto
 
-Objetivo: mejorar la apariencia y la accesibilidad del sitio utilizando herramientas modernas de diseño y estilización.
+```
+src/
+├── components/
+│   ├── auth/        ProtectedRoute
+│   ├── cart/        CartWidget
+│   ├── layouts/     Layout, Header, Nav, Footer
+│   ├── products/    Item, ItemList, ItemListContainer, ItemDetail,
+│   │                Pagination, ConfirmDeleteModal
+│   └── team/        TeamCard
+├── context/         AuthContext, CartContext
+├── firebase/        config.js
+├── pages/           Home, Products, ProductDetail, Cart, Login,
+│                    Profile, AdminDashboard, Create/EditProduct, NotFound
+└── services/        productService.js (CRUD y validaciones)
+```
 
-## Requerimiento #8:  Funcionalidades de búsqueda y paginación
+## Cómo correrlo en local
 
- 8.1. Barra de búsqueda (esta ya la tenemos)
-Implementar una barra de búsqueda que filtre los productos en tiempo real a medida que el usuario escribe.
+```bash
+npm install
+npm run dev
+```
 
-8.2. Paginador de productos
+Otros comandos: `npm run build` (compilar), `npm run preview` (probar el build) y `npm run lint`.
 
-Si el catálogo de productos es extenso, implementar un paginador para dividir los resultados en varias páginas y optimizar la navegación y los tiempos de carga.
+## Configuración de Firebase
 
+1. Crear un proyecto en Firebase con Authentication (correo y contraseña) y Firestore.
+2. Reemplazar los datos de `src/firebase/config.js` por los de tu proyecto.
+3. Publicar las reglas de `firestore.rules`: el catálogo es de lectura pública y la escritura es solo para administradores.
+4. Registrar el usuario admin en Authentication y crear en Firestore el documento `admins/{uid}` con el UID de ese usuario.
+5. Desde el panel `/admin`, usar el botón **Poblar desde productos.json** para cargar el catálogo inicial.
+
+## Deploy
+
+La aplicación está pensada para publicarse en Netlify o Vercel. `public/_redirects` redirige todas las rutas a `index.html` para que funcione React Router.
