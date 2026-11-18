@@ -10,7 +10,7 @@ import styles from "./ItemListContainer.module.css";
 
 const ItemListContainer = ({
   title = "Catálogo de Productos",
-  defaultPageSize = 6,
+  defaultPageSize = 8,
 }) => {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
