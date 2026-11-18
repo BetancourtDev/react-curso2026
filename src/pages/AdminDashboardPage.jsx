@@ -51,7 +51,7 @@ const AdminDashboardPage = () => {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [stockFilter, setStockFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(6);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
 
   // Notificación global de éxito o error de poblado
   const [bannerMessage, setBannerMessage] = useState("");
