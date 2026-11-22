@@ -1,182 +1,53 @@
-import {
-  NavLink,
-  useNavigate,
-  useLocation,
-  useSearchParams,
-} from "react-router-dom";
-import {
-  User,
-  LogOut,
-  LogIn,
-  LayoutDashboard,
-  Search,
-  X,
-} from "lucide-react";
+import { NavLink, useLocation, useSearchParams } from "react-router-dom";
+import { LayoutGrid, LayoutDashboard, House } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
+import { MAIN_CATEGORIES, categoryUrl } from "../../data/categories";
 import styles from "./Nav.module.css";
 
+// Barra de categorías debajo del header (en móvil se muestra dentro del menú).
 const Nav = ({ onNavigate }) => {
-  const { isAuthenticated, isAdmin, user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
-  const searchQuery = searchParams.get("buscar") || "";
+  const onCatalog = location.pathname === "/productos";
+  const activeCategory = onCatalog ? searchParams.get("categoria") : null;
 
-  const handleSearchChange = (event) => {
-    const value = event.target.value;
-    const isCatalogView =
-      location.pathname === "/" || location.pathname === "/productos";
-
-    if (!isCatalogView && value.trim()) {
-      navigate(`/productos?buscar=${encodeURIComponent(value)}`);
-      return;
-    }
-
-    const nextParams = new URLSearchParams(searchParams);
-    if (value) {
-      nextParams.set("buscar", value);
-    } else {
-      nextParams.delete("buscar");
-    }
-    setSearchParams(nextParams, { replace: true });
-  };
-
-  const handleClearSearch = () => {
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.delete("buscar");
-    setSearchParams(nextParams, { replace: true });
-  };
-
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    if (location.pathname !== "/" && location.pathname !== "/productos") {
-      navigate(
-        searchQuery.trim()
-          ? `/productos?buscar=${encodeURIComponent(searchQuery)}`
-          : "/productos"
-      );
-    }
-    onNavigate?.();
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      onNavigate?.();
-      navigate("/");
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
-  };
+  const linkClass = (active) =>
+    active ? `${styles.navLink} ${styles.activeLink}` : styles.navLink;
 
   return (
-    <nav className={styles.navigation} aria-label="Navegación principal">
-      {/* Buscador en tiempo real integrado en el Nav */}
-      <form
-        className={styles.navSearchForm}
-        onSubmit={handleSearchSubmit}
-        role="search"
-      >
-        <Search size={16} className={styles.searchIcon} />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          placeholder="Buscar productos..."
-          className={styles.searchInput}
-          aria-label="Buscar productos por nombre o descripción"
-        />
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={handleClearSearch}
-            className={styles.clearSearchBtn}
-            title="Limpiar búsqueda"
-            aria-label="Limpiar búsqueda"
-          >
-            <X size={14} />
-          </button>
-        )}
-      </form>
-
+    <nav className={styles.navigation} aria-label="Categorías">
       <ul className={styles.navList}>
-        <li className={styles.navItem}>
-          <NavLink
-            to="/"
-            end
-            onClick={onNavigate}
-            className={({ isActive }) =>
-              isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink
-            }
-          >
-            Inicio
+        <li className={styles.mobileOnly}>
+          <NavLink to="/" end onClick={onNavigate} className={({ isActive }) => linkClass(isActive)}>
+            <House size={16} /> Inicio
           </NavLink>
         </li>
-        <li className={styles.navItem}>
+        <li>
           <NavLink
             to="/productos"
-            end
             onClick={onNavigate}
-            className={({ isActive }) =>
-              isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink
-            }
+            className={() => `${linkClass(onCatalog && !activeCategory)} ${styles.allLink}`}
           >
-            Productos
+            <LayoutGrid size={16} /> Todos los productos
           </NavLink>
         </li>
-        {isAdmin && (
-          <li className={styles.navItem}>
+        {MAIN_CATEGORIES.map(({ name }) => (
+          <li key={name}>
             <NavLink
-              to="/admin"
+              to={categoryUrl(name)}
               onClick={onNavigate}
-              className={({ isActive }) =>
-                isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink
-              }
+              className={() => linkClass(activeCategory === name)}
             >
-              <LayoutDashboard size={16} />
-              <span>Panel Admin</span>
+              {name}
             </NavLink>
           </li>
-        )}
-
-        {isAuthenticated ? (
-          <>
-            <li className={styles.navItem}>
-              <NavLink
-                to="/perfil"
-                onClick={onNavigate}
-                className={({ isActive }) =>
-                  isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink
-                }
-              >
-                <User size={16} />
-                <span>{user?.displayName || "Mi Perfil"}</span>
-              </NavLink>
-            </li>
-            <li className={styles.navItem}>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className={styles.logoutBtn}
-                title="Cerrar sesión"
-              >
-                <LogOut size={16} />
-                <span>Salir</span>
-              </button>
-            </li>
-          </>
-        ) : (
-          <li className={styles.navItem}>
-            <NavLink
-              to="/login"
-              onClick={onNavigate}
-              className={({ isActive }) =>
-                isActive ? `${styles.navLink} ${styles.activeLink}` : styles.navLink
-              }
-            >
-              <LogIn size={16} />
-              <span>Ingresar</span>
+        ))}
+        {isAdmin && (
+          <li className={styles.adminItem}>
+            <NavLink to="/admin" onClick={onNavigate} className={({ isActive }) => `${linkClass(isActive)} ${styles.adminLink}`}>
+              <LayoutDashboard size={16} /> Panel Admin
             </NavLink>
           </li>
         )}

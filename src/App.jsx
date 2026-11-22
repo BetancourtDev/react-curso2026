@@ -12,6 +12,7 @@ const CartPage = lazy(() => import("./pages/CartPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
 
 const App = () => {
   return (
@@ -52,6 +53,7 @@ const App = () => {
         />
         <Route path="/producto/:id" element={<ProductDetailPage />} />
         <Route path="/carrito" element={<CartPage />} />
+        <Route path="/nosotros" element={<AboutPage />} />
         <Route path="/login" element={<LoginPage initialMode="login" />} />
         <Route path="/registro" element={<LoginPage initialMode="register" />} />
         <Route

@@ -6,7 +6,7 @@ const ItemList = ({ productos, onRequestDelete }) => {
   if (!productos || productos.length === 0) {
     return (
       <div className={styles.emptyContainer}>
-        <p className={styles.emptyText}>No se encontraron productos disponibles con los criterios seleccionados.</p>
+        <p className={styles.emptyText}>No encontramos productos para tu búsqueda. Probá con otras palabras o revisá todas las categorías.</p>
       </div>
     );
   }

@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ShoppingBag, Star, Check, Pencil, Trash2 } from "lucide-react";
+import { ShoppingBag, Star, Check, Pencil, Trash2, Truck } from "lucide-react";
 import BotonFavorito from "../BotonFavorito";
 import { useCart } from "../../context/useCart";
 import { useAuth } from "../../context/useAuth";
+import {
+  CUOTAS_SIN_INTERES,
+  DESCUENTO_TRANSFERENCIA,
+  ENVIO_GRATIS_DESDE,
+} from "../../data/categories";
 import styles from "./Item.module.css";
 
-// Condiciones comerciales que ya se promocionan en el sitio.
-const CUOTAS_SIN_INTERES = 12;
-const DESCUENTO_TRANSFERENCIA = 0.15;
 const STOCK_BAJO = 5;
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80";
 
 const formatARS = (value) =>
   Math.round(value).toLocaleString("es-AR", { maximumFractionDigits: 0 });
@@ -45,7 +49,16 @@ const Item = (props) => {
     <article className={`${styles.card} ${agotado ? styles.cardAgotado : ""}`}>
       <div className={styles.imageContainer}>
         <Link to={detailUrl} className={styles.imageLink} tabIndex={-1} aria-hidden="true">
-          <img src={image} alt="" className={styles.productImage} loading="lazy" />
+          <img
+            src={image}
+            alt=""
+            className={styles.productImage}
+            loading="lazy"
+            onError={(e) => {
+              // Si la URL de la imagen está rota, muestra una imagen genérica.
+              if (e.currentTarget.src !== FALLBACK_IMAGE) e.currentTarget.src = FALLBACK_IMAGE;
+            }}
+          />
         </Link>
         <span className={styles.categoryBadge}>{category}</span>
         <div className={styles.favContainer}>
@@ -80,12 +93,18 @@ const Item = (props) => {
           {price > 0 && (
             <>
               <p className={styles.installments}>
-                {CUOTAS_SIN_INTERES} cuotas sin interés de AR$ {formatARS(price / CUOTAS_SIN_INTERES)}
+                {CUOTAS_SIN_INTERES} cuotas sin interés de{" "}
+                <span className={styles.nowrap}>AR$ {formatARS(price / CUOTAS_SIN_INTERES)}</span>
               </p>
               <p className={styles.transferPrice}>
                 AR$ {formatARS(price * (1 - DESCUENTO_TRANSFERENCIA))} con transferencia
               </p>
             </>
+          )}
+          {price >= ENVIO_GRATIS_DESDE && (
+            <p className={styles.freeShipping}>
+              <Truck size={14} aria-hidden="true" /> Envío gratis
+            </p>
           )}
         </div>
 

@@ -1,8 +1,8 @@
 /* Distribuye las tarjetas con columnas adaptables al ancho disponible. */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
   width: 100%;
 }
 

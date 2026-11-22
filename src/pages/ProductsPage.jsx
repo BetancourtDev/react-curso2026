@@ -1,11 +1,7 @@
 import ItemListContainer from "../components/products/ItemListContainer";
 
 const ProductsPage = () => {
-  return (
-    <div>
-      <ItemListContainer title="Catálogo Completo de Productos" />
-    </div>
-  );
+  return <ItemListContainer title="Todos los productos" />;
 };
 
 export default ProductsPage;

@@ -1,35 +1,20 @@
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  width: 100%;
-  box-sizing: border-box;
-  transition: all 0.2s ease;
-}
-
 /* Barra de beneficios (estática, se va con el scroll) */
 .promoBar {
   width: 100%;
-  background: #0f172a;
-  color: #e2e8f0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--ink);
+  color: #ffffff;
 }
 
 .promoList {
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0.5rem 1.25rem;
+  padding: 0.45rem 1.25rem;
   list-style: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
-  font-size: 0.8rem;
+  gap: 2.25rem;
+  font-size: 0.78rem;
   font-weight: 500;
 }
 
@@ -41,7 +26,7 @@
 }
 
 .promoItem svg {
-  color: #38bdf8;
+  color: var(--amber);
   flex-shrink: 0;
 }
 
@@ -51,125 +36,224 @@
   }
 }
 
-/* Contenedor Principal del Header */
-.container {
-  max-width: 1200px;
+/* Header fijo */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+}
+
+.mainRow {
+  max-width: 1280px;
   margin: 0 auto;
   padding: 0.85rem 1.5rem;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "brand search actions";
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  position: relative;
+  gap: 2rem;
 }
 
 .brand {
+  grid-area: brand;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.55rem;
   text-decoration: none;
   color: var(--text-h);
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-family: var(--heading);
   font-weight: 700;
-  font-size: 1.25rem;
-  transition: opacity 0.2s ease;
-}
-
-.brand:hover {
-  opacity: 0.9;
-}
-
-.logoBadge {
-  width: 38px;
-  height: 38px;
-  background: var(--accent-gradient);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.brand:hover .logoBadge {
-  transform: scale(1.05);
-}
-
-.brandIcon {
-  color: #ffffff;
+  font-size: 1.15rem;
 }
 
 .brandTitle {
-  letter-spacing: -0.5px;
+  font-family: var(--heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
-.navGroup {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
+.brandAccent {
+  color: var(--accent);
 }
 
-.navContainer {
-  display: flex;
-  align-items: center;
+.searchSlot {
+  grid-area: search;
+  max-width: 640px;
+  width: 100%;
+  justify-self: center;
 }
 
-.quickActions {
+.actions {
+  grid-area: actions;
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.5rem;
 }
 
-.themeToggleBtn,
-.mobileMenuBtn {
+.account {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.accountLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  color: var(--text-h);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
+}
+
+.accountLink:hover {
+  background: var(--code-bg);
+}
+
+.accountText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.accountText small {
+  font-size: 0.72rem;
+  color: var(--text);
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accountText strong {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.iconBtn {
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   place-items: center;
   color: var(--text-h);
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background: transparent;
+  border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.themeToggleBtn:hover,
-.mobileMenuBtn:hover {
-  border-color: var(--accent-neon);
-  color: var(--accent-neon);
-  background: var(--accent-bg);
+.iconBtn:hover {
+  background: var(--code-bg);
+  color: var(--accent);
+}
+
+.logoutBtn {
+  width: 34px;
+  height: 34px;
+  color: var(--text);
 }
 
 .mobileMenuBtn {
   display: none;
+  grid-area: menu;
+}
+
+/* Barra de categorías */
+.categoryBar {
+  border-top: 1px solid var(--border);
+}
+
+.categoryInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.1rem;
 }
 
 @media (max-width: 980px) {
-  .container {
-    padding: 0.75rem 1rem;
-  }
-
-  .brandTitle {
-    font-size: 1.1rem;
+  .mainRow {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "menu brand actions"
+      "search search search";
+    gap: 0.65rem 0.5rem;
+    padding: 0.65rem 1rem 0.75rem;
   }
 
   .mobileMenuBtn {
     display: grid;
   }
 
-  .navContainer {
+  .brandTitle {
+    font-size: 1.15rem;
+  }
+
+  .brandMark {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+
+  .searchSlot {
+    max-width: none;
+  }
+
+  .accountText {
+    display: none;
+  }
+
+  .accountLink {
+    padding: 0.5rem;
+  }
+
+  .logoutBtn {
+    display: none;
+  }
+
+  .categoryBar {
     display: none;
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    padding: 1rem;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
     background: var(--bg-card);
     border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow-lg);
   }
 
-  .navContainerOpen {
+  .categoryBarOpen {
     display: block;
+  }
+
+  .categoryInner {
+    padding: 0.5rem 1rem 1rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .brandTitle {
+    display: none;
+  }
+
+  .themeBtn {
+    width: 36px;
   }
 }

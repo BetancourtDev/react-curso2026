@@ -10,9 +10,21 @@ import {
   Flame,
   Sparkles,
   Zap,
+  CreditCard,
+  RotateCcw,
+  Gamepad2,
 } from "lucide-react";
 import ItemListContainer from "../components/products/ItemListContainer";
+import { MAIN_CATEGORIES, categoryUrl } from "../data/categories";
 import styles from "./HomePage.module.css";
+
+const PERKS = [
+  { icon: Truck, title: "Envío gratis", desc: "En compras desde AR$ 50.000" },
+  { icon: CreditCard, title: "12 cuotas sin interés", desc: "Con todas las tarjetas" },
+  { icon: ShieldCheck, title: "Garantía oficial", desc: "12 meses en todos los productos" },
+  { icon: RotateCcw, title: "Devolución gratis", desc: "Tenés 30 días para cambiarlo" },
+  { icon: Headphones, title: "Atención personalizada", desc: "Lun a Vie de 8 a 20 hs" },
+];
 
 const HERO_SLIDES = [
   {
@@ -177,40 +189,72 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Franja de Beneficios */}
-      <section className={styles.perksSection}>
-        <div className={styles.perkCard}>
-          <Truck className={styles.perkIcon} size={28} />
-          <div>
-            <h4 className={styles.perkTitle}>Envíos rápidos</h4>
-            <p className={styles.perkDesc}>
-              Entregas seguras en 24/48 horas a todo el territorio nacional.
-            </p>
+      {/* Franja de beneficios */}
+      <section className={styles.perksStrip} aria-label="Beneficios">
+        {PERKS.map(({ icon: Icon, title, desc }) => (
+          <div key={title} className={styles.perkItem}>
+            <Icon className={styles.perkIcon} size={26} aria-hidden="true" />
+            <div>
+              <p className={styles.perkTitle}>{title}</p>
+              <p className={styles.perkDesc}>{desc}</p>
+            </div>
           </div>
-        </div>
-        <div className={styles.perkCard}>
-          <ShieldCheck className={styles.perkIcon} size={28} />
-          <div>
-            <h4 className={styles.perkTitle}>Compra protegida</h4>
-            <p className={styles.perkDesc}>
-              Garantía oficial y pagos encriptados de extremo a extremo.
-            </p>
-          </div>
-        </div>
-        <div className={styles.perkCard}>
-          <Headphones className={styles.perkIcon} size={28} />
-          <div>
-            <h4 className={styles.perkTitle}>Soporte real</h4>
-            <p className={styles.perkDesc}>
-              Equipo de asesores humanos listos para resolver cualquier consulta.
-            </p>
-          </div>
-        </div>
+        ))}
       </section>
 
-      {/* Catálogo en Home */}
+      {/* Comprar por categoría */}
+      <section aria-labelledby="home-categorias">
+        <div className={styles.sectionHeader}>
+          <h2 id="home-categorias" className={styles.sectionTitle}>
+            Comprá por categoría
+          </h2>
+          <Link to="/productos" className={styles.seeAllLink}>
+            Ver todo <ArrowRight size={16} />
+          </Link>
+        </div>
+        <ul className={styles.categoryGrid}>
+          {MAIN_CATEGORIES.map(({ name, icon: Icon, tagline }) => (
+            <li key={name}>
+              <Link to={categoryUrl(name)} className={styles.categoryCard}>
+                <span className={styles.categoryIcon}>
+                  <Icon size={26} aria-hidden="true" />
+                </span>
+                <span className={styles.categoryName}>{name}</span>
+                <span className={styles.categoryTagline}>{tagline}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Más vendidos */}
       <section className={styles.catalogSection}>
-        <ItemListContainer title="Productos destacados" />
+        <ItemListContainer
+          variant="featured"
+          title="Los más elegidos"
+          subtitle="Los productos mejor valorados por nuestros clientes."
+          limit={8}
+        />
+      </section>
+
+      {/* Banners promocionales */}
+      <section className={styles.promoBanners} aria-label="Promociones">
+        <Link to={categoryUrl("Gaming")} className={`${styles.promoBanner} ${styles.promoBannerDark}`}>
+          <span className={styles.promoKicker}>Semana gamer</span>
+          <span className={styles.promoHeadline}>Hasta 20% OFF en Gaming</span>
+          <span className={styles.promoCta}>
+            Comprar ahora <ArrowRight size={16} />
+          </span>
+          <Gamepad2 className={styles.promoDecor} size={120} aria-hidden="true" />
+        </Link>
+        <Link to="/productos" className={`${styles.promoBanner} ${styles.promoBannerAmber}`}>
+          <span className={styles.promoKicker}>Pagá como quieras</span>
+          <span className={styles.promoHeadline}>12 cuotas sin interés con todas las tarjetas</span>
+          <span className={styles.promoCta}>
+            Ver productos <ArrowRight size={16} />
+          </span>
+          <CreditCard className={styles.promoDecor} size={120} aria-hidden="true" />
+        </Link>
       </section>
     </div>
   );
