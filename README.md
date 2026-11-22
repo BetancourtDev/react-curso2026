@@ -27,7 +27,8 @@ Ruta del panel: `/admin`. Solo los usuarios con rol de administrador pueden crea
 
 ## Funcionalidades
 
-- **Catálogo** con productos desde Firestore, buscador en tiempo real, filtro por categoría y paginador.
+- **Catálogo** con productos desde Firestore, buscador en tiempo real, filtro por categoría (barra de categorías y sidebar, guardado en la URL), ordenamiento por precio o valoración y paginador.
+- **Home** con carrusel de promociones, accesos por categoría, productos mejor valorados y banners.
 - **Detalle de producto** en `/producto/:id`.
 - **Carrito** (`CartContext`): agregar, eliminar, aumentar, disminuir y vaciar; se guarda en `localStorage`.
 - **Autenticación** (`AuthContext`): registro, login y logout con Firebase Auth.
@@ -43,6 +44,7 @@ Ruta del panel: `/admin`. Solo los usuarios con rol de administrador pueden crea
 | `/productos`               | Catálogo con búsqueda y paginación  | Público       |
 | `/producto/:id`            | Detalle de producto                 | Público       |
 | `/carrito`                 | Carrito de compras                  | Público       |
+| `/nosotros`                | Equipo y sucursales                 | Público       |
 | `/login` y `/registro`     | Autenticación                       | Público       |
 | `/perfil`                  | Perfil del usuario                  | Autenticado   |
 | `/admin`                   | Panel de gestión de productos       | Administrador |
@@ -56,13 +58,14 @@ src/
 ├── components/
 │   ├── auth/        ProtectedRoute
 │   ├── cart/        CartWidget
-│   ├── layouts/     Layout, Header, Nav, Footer
+│   ├── layouts/     Layout, Header, Nav, SearchBar, Footer
 │   ├── products/    Item, ItemList, ItemListContainer, ItemDetail,
 │   │                Pagination, ConfirmDeleteModal
 │   └── team/        TeamCard
 ├── context/         AuthContext, CartContext
+├── data/            categories.js (categorías principales y condiciones comerciales)
 ├── firebase/        config.js
-├── pages/           Home, Products, ProductDetail, Cart, Login,
+├── pages/           Home, Products, ProductDetail, Cart, Login, About,
 │                    Profile, AdminDashboard, Create/EditProduct, NotFound
 └── services/        productService.js (CRUD y validaciones)
 ```
