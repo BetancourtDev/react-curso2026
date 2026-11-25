@@ -82,7 +82,7 @@ Otros comandos: `npm run build` (compilar), `npm run preview` (probar el build) 
 ## Configuración de Firebase
 
 1. Crear un proyecto en Firebase con Authentication (correo y contraseña) y Firestore.
-2. Reemplazar los datos de `src/firebase/config.js` por los de tu proyecto.
+2. Copiar `.env.example` como `.env` y completar las variables con los datos de tu proyecto Firebase.
 3. Publicar las reglas de `firestore.rules`: el catálogo es de lectura pública y la escritura es solo para administradores.
 4. Registrar el usuario admin en Authentication y crear en Firestore el documento `admins/{uid}` con el UID de ese usuario.
 5. Desde el panel `/admin`, usar el botón **Poblar desde productos.json** para cargar el catálogo inicial.

@@ -3,14 +3,13 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 
-// Configuración de la aplicación registrada en Firebase.
 const firebaseConfig = {
-  apiKey: '***REMOVED_FIREBASE_API_KEY***',
-  authDomain: 'tienda-online-7e77f.firebaseapp.com',
-  projectId: 'tienda-online-7e77f',
-  storageBucket: 'tienda-online-7e77f.firebasestorage.app',
-  messagingSenderId: '874698166580',
-  appId: '1:874698166580:web:f089c7f5611d864ec85561',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Inicializa Firebase con la configuración del proyecto.

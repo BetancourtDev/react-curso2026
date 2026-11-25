@@ -5,7 +5,6 @@
     "rol": "CEO & Co-Fundadora",
     "bio": "Apasionada por la innovación y el comercio digital de cercanía.",
     "imagen": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
-    "email": "***REMOVED_PERSONAL_EMAIL***",
     "especialidad": "Dirección"
   },
   {
@@ -14,7 +13,6 @@
     "rol": "Frontend Lead & Arquitecto Web",
     "bio": "Especialista en React y experiencias interactivas de alto rendimiento.",
     "imagen": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-    "email": "***REMOVED_TEAM_EMAIL***",
     "especialidad": "Desarrollo"
   },
   {
@@ -23,7 +21,6 @@
     "rol": "Lead UX/UI Designer",
     "bio": "Transformando conceptos complejos en interfaces intuitivas y elegantes.",
     "imagen": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
-    "email": "***REMOVED_TEAM_EMAIL***",
     "especialidad": "Diseño UX"
   },
   {
@@ -32,7 +29,6 @@
     "rol": "Backend & Cloud Specialist",
     "bio": "Garantizando escalabilidad, seguridad e integración fluida de APIs.",
     "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-    "email": "***REMOVED_TEAM_EMAIL***",
     "especialidad": "Infraestructura"
   }
 ]
